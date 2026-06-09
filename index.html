@@ -823,37 +823,51 @@ function exportCSV(){
   a.download='trackstream_qc_report.csv'; a.click();
 }
 
-// Load records
-(async function(){
+// Load records via JSONP — bypasses CORS from GitHub Pages
+function processRecords(json) {
+  if(!json.records) { 
+    setLookupStatus('Failed to load records','err');
+    setConn('err','Connection failed');
+    ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+    return;
+  }
+  records=json.records.map(function(r){
+    return {
+      tracking_number:r.tn||r.tracking_number||'',
+      platform:r.platform||'',
+      book:r.book||'',
+      customer:r.customer||'',
+      trade:r.trade||'',
+      zone:r.zone||'',
+      target_number:r.target||r.target_number||'',
+      source:r.source||'',
+      convirza_tn_id:r.conv_id||r.convirza_tn_id||'',
+      convirza_tn_name:r.conv_name||r.convirza_tn_name||'',
+      convirza_campaign:r.conv_campaign||r.convirza_campaign||'',
+      convirza_status:r.conv_status||r.convirza_status||''
+    };
+  });
+  ready=true;
+  var cs=records.filter(function(r){ return (r.platform||'').toUpperCase()!=='CONVIRZA'; }).length;
+  var cv=records.filter(function(r){ return (r.platform||'').toUpperCase()==='CONVIRZA'; }).length;
+  setStat('s-total',records.length);
+  setStat('s-cs',cs);
+  setStat('s-cv',cv);
+  btn.disabled=false;
+  setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
+  setConn('ok',records.length.toLocaleString()+' records');
+}
+
+(function(){
   try {
-    var res=await fetch(BACKEND+'?action=getAllRecords');
-    var json=await res.json();
-    if(!json.records) throw new Error('no records');
-    records=json.records.map(function(r){
-      return {
-        tracking_number:r.tn||r.tracking_number||'',
-        platform:r.platform||'',
-        book:r.book||'',
-        customer:r.customer||'',
-        trade:r.trade||'',
-        zone:r.zone||'',
-        target_number:r.target||r.target_number||'',
-        source:r.source||'',
-        convirza_tn_id:r.conv_id||r.convirza_tn_id||'',
-        convirza_tn_name:r.conv_name||r.convirza_tn_name||'',
-        convirza_campaign:r.conv_campaign||r.convirza_campaign||'',
-        convirza_status:r.conv_status||r.convirza_status||''
-      };
-    });
-    ready=true;
-    var cs=records.filter(function(r){ return (r.platform||'').toUpperCase()!=='CONVIRZA'; }).length;
-    var cv=records.filter(function(r){ return (r.platform||'').toUpperCase()==='CONVIRZA'; }).length;
-    setStat('s-total',records.length);
-    setStat('s-cs',cs);
-    setStat('s-cv',cv);
-    btn.disabled=false;
-    setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
-    setConn('ok',records.length.toLocaleString()+' records');
+    var script=document.createElement('script');
+    script.src=BACKEND+'?action=getAllRecords&callback=processRecords';
+    script.onerror=function(){
+      setLookupStatus('Failed to load records','err');
+      setConn('err','Connection failed');
+      ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+    };
+    document.head.appendChild(script);
   } catch(e){
     setLookupStatus('Failed to load records','err');
     setConn('err','Connection failed');
