@@ -500,9 +500,14 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
     </nav>
 
     <div class="sidebar-footer">
-      <div class="conn-status">
+      <div class="conn-status" style="margin-bottom:10px">
         <div class="conn-dot loading" id="conn-dot"></div>
         <span id="conn-label">Connecting...</span>
+      </div>
+      <div id="key-setup" style="display:none">
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Gemini API Key</div>
+        <input type="password" id="gemini-key-input" placeholder="Paste key here..." style="width:100%;background:#F9F6F3;border:1px solid #DDD5CC;border-radius:6px;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1C1C1E;outline:none;margin-bottom:6px" />
+        <button onclick="saveGeminiKey()" style="width:100%;background:#6B1E2E;color:#fff;border:none;border-radius:6px;padding:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">Save Key</button>
       </div>
     </div>
   </aside>
@@ -602,7 +607,7 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
 
 <script>
 var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0mjc-wuCBZ44-4A/exec';
-var GEMINI_KEY = 'AQ.Ab8RN6L5QnY3seNtxG-O2H5_kvbXsAbrhR_Aueg9CSIZpLqOXQ';
+var GEMINI_KEY = localStorage.getItem('ts2_gemini_key') || '';
 
 var records=[], ready=false, qcResults=[];
 
@@ -821,6 +826,21 @@ function exportCSV(){
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
   a.download='trackstream_qc_report.csv'; a.click();
+}
+
+function saveGeminiKey(){
+  var k = document.getElementById('gemini-key-input').value.trim();
+  if(!k){ alert('Please paste your Gemini API key'); return; }
+  localStorage.setItem('ts2_gemini_key', k);
+  GEMINI_KEY = k;
+  document.getElementById('key-setup').style.display='none';
+  alert('Key saved. You can now use the Booklet QC scanner.');
+}
+
+if(!GEMINI_KEY){
+  window.addEventListener('DOMContentLoaded', function(){
+    document.getElementById('key-setup').style.display='block';
+  });
 }
 
 // Load records via JSONP — bypasses CORS from GitHub Pages
