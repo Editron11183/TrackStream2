@@ -505,9 +505,9 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
         <span id="conn-label">Connecting...</span>
       </div>
       <div id="key-setup" style="display:none">
-        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Gemini API Key</div>
-        <input type="password" id="gemini-key-input" placeholder="Paste key here..." style="width:100%;background:#F9F6F3;border:1px solid #DDD5CC;border-radius:6px;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1C1C1E;outline:none;margin-bottom:6px" />
-        <button onclick="saveGeminiKey()" style="width:100%;background:#6B1E2E;color:#fff;border:none;border-radius:6px;padding:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">Save Key</button>
+        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
+        <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." style="width:100%;background:#F9F6F3;border:1px solid #DDD5CC;border-radius:6px;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1C1C1E;outline:none;margin-bottom:6px" />
+        <button onclick="saveClaudeKey()" style="width:100%;background:#6B1E2E;color:#fff;border:none;border-radius:6px;padding:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">Save Key</button>
       </div>
     </div>
   </aside>
@@ -539,14 +539,14 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
     <section class="panel" id="panel-qc">
       <div class="panel-header">
         <div class="panel-title">Booklet QC Scanner</div>
-        <div class="panel-sub">Gemini Vision reads every page — text and image layers</div>
+        <div class="panel-sub">Claude Vision reads every page — text and image layers</div>
       </div>
 
       <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-file').click()">
         <div class="upload-zone-icon">📄</div>
         <div class="upload-zone-title">Upload Booklet PDF</div>
         <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
-        <div class="upload-zone-pill">Powered by Gemini 1.5 Flash</div>
+        <div class="upload-zone-pill">Powered by Claude Haiku</div>
       </div>
       <input type="file" id="pdf-file" accept=".pdf" />
 
@@ -607,7 +607,7 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
 
 <script>
 var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0mjc-wuCBZ44-4A/exec';
-var GEMINI_KEY = localStorage.getItem('ts2_gemini_key') || '';
+var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
 
 var records=[], ready=false, qcResults=[];
 
@@ -699,62 +699,61 @@ function setScanState(s,d){ document.getElementById('scan-stage').textContent=s;
 
 async function startScan(file){
   if(!ready){ alert('Records still loading — try again in a moment.'); return; }
+  if(!CLAUDE_KEY){ alert('Please enter your Anthropic API key in the sidebar first.'); return; }
+
   uploadZone.style.display='none';
   document.getElementById('qc-results').classList.remove('show');
   document.getElementById('scan-progress').classList.add('show');
-  setScanState('Uploading PDF to Gemini...',(file.size/1024/1024).toFixed(1)+' MB');
+  setScanState('Reading PDF...',(file.size/1024/1024).toFixed(1)+' MB');
 
   try {
-    var uploadRes = await fetch(
-      'https://generativelanguage.googleapis.com/upload/v1beta/files?key='+GEMINI_KEY,
-      {
-        method:'POST',
-        headers:{
-          'X-Goog-Upload-Protocol':'raw',
-          'X-Goog-Upload-Command':'upload, finalize',
-          'X-Goog-Upload-Header-Content-Length':file.size,
-          'X-Goog-Upload-Header-Content-Type':'application/pdf',
-          'Content-Type':'application/pdf'
-        },
-        body:file
-      }
-    );
+    // Convert PDF to base64
+    var base64 = await new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
-    var uploadJson = await uploadRes.json();
-    if(uploadJson.error) throw new Error(uploadJson.error.message||JSON.stringify(uploadJson.error));
-    var fileUri = uploadJson.file&&uploadJson.file.uri ? uploadJson.file.uri : null;
-    var fileName = uploadJson.file&&uploadJson.file.name ? uploadJson.file.name : null;
-    if(!fileUri) throw new Error('No file URI: '+JSON.stringify(uploadJson));
+    setScanState('Claude is reading the booklet...','Analyzing all pages — this may take 30–60 seconds');
 
-    // Wait for file to be processed by Gemini
-    setScanState('Waiting for Gemini to process file...', 'Please wait 5 seconds...');
-    await new Promise(function(r){setTimeout(r,5000);});
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CLAUDE_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 8096,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'document',
+              source: {
+                type: 'base64',
+                media_type: 'application/pdf',
+                data: base64
+              }
+            },
+            {
+              type: 'text',
+              text: 'This is an advertising booklet PDF. Go through every single page carefully. Find every phone number visible anywhere on every page. For each phone number found, record which page number it appears on. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8181234567"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages, do not include any explanation.'
+            }
+          ]
+        }]
+      })
+    });
 
-    setScanState('Gemini is reading the booklet...','Analyzing all pages — 30–90 seconds');
+    var json = await response.json();
+    if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
 
-    var geminiRes = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+GEMINI_KEY,
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{parts:[
-            {file_data:{mime_type:'application/pdf',file_uri:fileUri}},
-            {text:'This is an advertising booklet PDF. Go through every single page carefully. Find every phone number visible anywhere — including numbers in images, graphics, logos, or styled text. For each phone number, record which page it is on. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8181234567"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages.'}
-          ]}],
-          generationConfig:{temperature:0,maxOutputTokens:8192}
-        })
-      }
-    );
-
-    var gj = await geminiRes.json();
-    if(gj.error) throw new Error(gj.error.message||JSON.stringify(gj.error));
-
-    var text = gj.candidates&&gj.candidates[0]&&gj.candidates[0].content&&gj.candidates[0].content.parts&&gj.candidates[0].content.parts[0]
-      ? gj.candidates[0].content.parts[0].text : '[]';
-
-    text=text.replace(/```json|```/g,'').trim();
-    var parsed=JSON.parse(text);
+    var text = json.content&&json.content[0] ? json.content[0].text : '[]';
+    text = text.replace(/```json|```/g,'').trim();
+    var parsed = JSON.parse(text);
 
     document.getElementById('scan-progress').classList.remove('show');
     buildReport(parsed);
@@ -833,16 +832,16 @@ function exportCSV(){
   a.download='trackstream_qc_report.csv'; a.click();
 }
 
-function saveGeminiKey(){
-  var k = document.getElementById('gemini-key-input').value.trim();
-  if(!k){ alert('Please paste your Gemini API key'); return; }
-  localStorage.setItem('ts2_gemini_key', k);
-  GEMINI_KEY = k;
+function saveClaudeKey(){
+  var k = document.getElementById('claude-key-input').value.trim();
+  if(!k){ alert('Please paste your Anthropic API key'); return; }
+  localStorage.setItem('ts2_claude_key', k);
+  CLAUDE_KEY = k;
   document.getElementById('key-setup').style.display='none';
   alert('Key saved. You can now use the Booklet QC scanner.');
 }
 
-if(!GEMINI_KEY){
+if(!CLAUDE_KEY){
   window.addEventListener('DOMContentLoaded', function(){
     document.getElementById('key-setup').style.display='block';
   });
