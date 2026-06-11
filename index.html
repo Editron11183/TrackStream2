@@ -440,6 +440,9 @@ tbody tr.flagrow:hover td { background: #FFE5E5; }
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
+.pill-dupe { background: #FFF3CD; color: #856404; }
+tbody tr.duperow td { background: #FFFBF0; }
+tbody tr.duperow:hover td { background: #FFF5D6; }
 
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
 
@@ -741,7 +744,7 @@ async function startScan(file){
             },
             {
               type: 'text',
-              text: 'This is an advertising booklet PDF. Go through every single page carefully. Find every phone number visible anywhere on every page. For each phone number found, record which page number it appears on. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8181234567"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages, do not include any explanation.'
+              text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate and find ALL phone numbers from ALL ads on every page. For each phone number found, record which page number it appears on. If a page has two ads each with their own number, return both. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":2,"number":"8185556789"},{"page":3,"number":"4089876543"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number from every ad on every page, do not skip any pages or any ads, do not include any explanation.'
             }
           ]
         }]
