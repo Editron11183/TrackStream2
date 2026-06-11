@@ -779,22 +779,59 @@ function buildReport(data){
 
   data.sort(function(a,b){ return a.page-b.page; });
 
+  // Find duplicate numbers — same number on multiple pages
+  var numPages={};
+  data.forEach(function(item){
+    var num=String(item.number).replace(/\D/g,'');
+    if(num.length!==10) return;
+    if(!numPages[num]) numPages[num]=[];
+    if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
+  });
+
+  // Find duplicate ads — same customer+trade on multiple pages
+  var adPages={};
+  data.forEach(function(item){
+    var num=String(item.number).replace(/\D/g,'');
+    if(num.length!==10) return;
+    var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
+    if(!rec) return;
+    var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
+    if(!adPages[key]) adPages[key]=[];
+    var exists=adPages[key].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
+    if(!exists) adPages[key].push({page:item.page,num:num});
+  });
+
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
     var pg=item.page;
     if(num.length!==10) return;
     var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
     var isMatch=!!rec;
+    var isDupeNum=numPages[num]&&numPages[num].length>1;
+    var isDupeAd=false;
+    var dupeAdPages=[];
+    if(rec){
+      var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
+      if(adPages[key]&&adPages[key].length>1){ isDupeAd=true; dupeAdPages=adPages[key]; }
+    }
     if(isMatch) matched++; else flagged++;
 
-    qcResults.push({page:pg,num:num,status:isMatch?'MATCH':'NOT FOUND',
+    var status=!isMatch?'NOT FOUND':isDupeNum?'DUPLICATE NUMBER':isDupeAd?'DUPLICATE AD':'MATCH';
+    qcResults.push({page:pg,num:num,status:status,
       customer:rec?rec.customer:'',trade:rec?rec.trade:'',
       zone:rec?rec.zone:'',book:rec?rec.book:'',platform:rec?rec.platform:''});
 
     var tr=document.createElement('tr');
     if(!isMatch) tr.className='flagrow';
+    else if(isDupeNum||isDupeAd) tr.className='duperow';
+
+    var pill=!isMatch?'<span class="pill pill-miss">✕ Not Found</span>'
+      :isDupeNum?'<span class="pill pill-dupe">⚠ Dup. Number</span>'
+      :isDupeAd?'<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+      :'<span class="pill pill-match">✓ Match</span>';
+
     tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
-      +'<td><span class="pill '+(isMatch?'pill-match':'pill-miss')+'">'+(isMatch?'✓ Match':'✕ Not Found')+'</span></td>'
+      +'<td>'+pill+'</td>'
       +'<td>'+(rec?rec.customer:'—')+'</td>'
       +'<td>'+(rec?rec.trade:'—')+'</td>'
       +'<td>'+(rec?rec.zone:'—')+'</td>'
@@ -804,8 +841,17 @@ function buildReport(data){
 
     if(!isMatch){
       var tr2=document.createElement('tr'); tr2.className='flagrow';
-      tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required</td>';
+      tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
       tbFlags.appendChild(tr2);
+    } else if(isDupeNum){
+      var tr3=document.createElement('tr'); tr3.className='duperow';
+      tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
+      tbFlags.appendChild(tr3);
+    } else if(isDupeAd){
+      var tr4=document.createElement('tr'); tr4.className='duperow';
+      var pageList=dupeAdPages.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
+      tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — dup. ad on: '+pageList+'</td>';
+      tbFlags.appendChild(tr4);
     }
   });
 
