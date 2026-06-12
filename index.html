@@ -737,7 +737,7 @@ function buildReport(data){
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
     if(num.length!==10) return;
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
+    var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
     if(!rec) return;
     var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
     if(!adPages[key]) adPages[key]=[];
@@ -751,7 +751,7 @@ function buildReport(data){
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
     if(num.length!==10) return;
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
+    var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
     if(!rec) return;
     var ckey=(rec.customer||'').toUpperCase().trim();
     if(!customerPages[ckey]) customerPages[ckey]=[];
@@ -764,7 +764,8 @@ function buildReport(data){
     var pg=item.page;
     if(num.length!==10) return;
 
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
+    var normNum=norm(num);
+    var rec=records.filter(function(r){ return norm(r.tracking_number)===normNum; })[0];
     var isMatch=!!rec;
 
     // Duplicate number: same TN appears on multiple pages
