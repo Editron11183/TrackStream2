@@ -15,7 +15,6 @@
   --border2: #E8E2DA;
   --burgundy: #6B1E2E;
   --burgundy-bright: #8B2840;
-  --cream: #1C1C1E;
   --text: #1C1C1E;
   --text-dim: #888;
   --green: #2E7D3A;
@@ -40,7 +39,6 @@ body {
   min-height: 100vh;
 }
 
-/* SIDEBAR */
 .sidebar {
   background: var(--surface);
   border-right: 1px solid var(--border);
@@ -69,19 +67,8 @@ body {
 
 .brand-logo svg { width: 18px; height: 18px; fill: #fff; }
 
-.brand-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.brand-version {
-  font-size: 10px;
-  font-family: var(--mono);
-  color: var(--burgundy);
-  margin-top: 2px;
-  letter-spacing: 0.06em;
-}
+.brand-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.brand-version { font-size: 10px; font-family: var(--mono); color: var(--burgundy); margin-top: 2px; letter-spacing: 0.06em; }
 
 .sidebar-stats {
   padding: 16px 20px;
@@ -91,33 +78,12 @@ body {
   gap: 10px;
 }
 
-.stat-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.stat-name {
-  font-size: 10px;
-  color: var(--text-dim);
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.stat-num {
-  font-size: 13px;
-  font-weight: 700;
-  font-family: var(--mono);
-  color: var(--text);
-}
-
+.stat-row { display: flex; justify-content: space-between; align-items: center; }
+.stat-name { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-num { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--text); }
 .stat-num.loading { color: var(--text-dim); font-weight: 400; }
 
-.sidebar-nav {
-  padding: 12px 10px;
-  flex: 1;
-}
+.sidebar-nav { padding: 12px 10px; flex: 1; }
 
 .nav-item {
   display: flex;
@@ -142,18 +108,10 @@ body {
   border-top: 1px solid var(--border);
 }
 
-.conn-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  font-family: var(--mono);
-  color: var(--text-dim);
-}
+.conn-status { display: flex; align-items: center; gap: 8px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
 
 .conn-dot {
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--text-dim);
   flex-shrink: 0;
@@ -164,7 +122,6 @@ body {
 .conn-dot.loading { background: var(--gold); animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-/* MAIN */
 .main { display: flex; flex-direction: column; min-height: 100vh; }
 .panel { display: none; flex: 1; padding: 32px 36px; }
 .panel.active { display: flex; flex-direction: column; }
@@ -173,7 +130,6 @@ body {
 .panel-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .panel-sub { font-size: 12px; color: var(--text-dim); }
 
-/* LOOKUP */
 .search-box { display: flex; max-width: 520px; margin-bottom: 16px; }
 
 .search-input {
@@ -211,14 +167,7 @@ body {
 .search-btn:hover { background: var(--burgundy-bright); }
 .search-btn:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
 
-.lookup-status {
-  font-size: 11px;
-  font-family: var(--mono);
-  color: var(--text-dim);
-  margin-bottom: 16px;
-  min-height: 16px;
-}
-
+.lookup-status { font-size: 11px; font-family: var(--mono); color: var(--text-dim); margin-bottom: 16px; min-height: 16px; }
 .lookup-status.ok { color: var(--green); }
 .lookup-status.err { color: var(--red); }
 .lookup-status.loading { color: var(--gold); }
@@ -244,26 +193,16 @@ body {
   gap: 8px;
 }
 
-.result-status-label {
-  font-size: 11px;
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
+.result-status-label { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; }
 .result-status-label.ok { color: #A8E6B0; }
 .result-status-label.err { color: #F5A5A5; }
 
 .result-badges { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .rbadge {
-  font-size: 10px;
-  font-family: var(--mono);
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 10px; font-family: var(--mono); font-weight: 500;
+  padding: 3px 8px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.05em;
 }
 
 .rb-cs { background: #D0E8F5; color: #1A5276; }
@@ -272,12 +211,7 @@ body {
 .rb-lst { background: #E8D5F5; color: #4A235A; }
 .rb-bay { background: #D5E8FA; color: #1A3D5C; }
 
-.result-card-body {
-  padding: 18px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
+.result-card-body { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 .rf { display: flex; flex-direction: column; gap: 3px; }
 .rf.full { grid-column: 1/-1; }
@@ -287,7 +221,6 @@ body {
 .rf-val.na { color: var(--text-dim); font-weight: 400; }
 .rf-div { height: 1px; background: var(--border2); grid-column: 1/-1; }
 
-/* QC */
 .upload-zone {
   border: 2px dashed var(--border);
   border-radius: 14px;
@@ -300,11 +233,7 @@ body {
   margin-bottom: 20px;
 }
 
-.upload-zone:hover, .upload-zone.drag {
-  border-color: var(--burgundy);
-  background: #FFF5F5;
-}
-
+.upload-zone:hover, .upload-zone.drag { border-color: var(--burgundy); background: #FFF5F5; }
 .upload-zone-icon { font-size: 38px; margin-bottom: 12px; }
 .upload-zone-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .upload-zone-sub { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
@@ -338,8 +267,7 @@ input[type=file] { display: none; }
 .scan-progress.show { display: block; }
 
 .scan-spinner {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border: 3px solid var(--border);
   border-top-color: var(--burgundy);
   border-radius: 50%;
@@ -355,20 +283,9 @@ input[type=file] { display: none; }
 .qc-results { display: none; max-width: 860px; }
 .qc-results.show { display: block; }
 
-.qc-scorecards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
+.qc-scorecards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
 
-.scorecard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 18px;
-}
-
+.scorecard { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; }
 .sc-val { font-size: 26px; font-weight: 700; font-family: var(--mono); margin-bottom: 4px; }
 .sc-val.blue { color: #1A5276; }
 .sc-val.green { color: var(--green); }
@@ -436,13 +353,13 @@ tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--surface2); }
 tbody tr.flagrow td { background: #FFF0F0; }
 tbody tr.flagrow:hover td { background: #FFE5E5; }
+tbody tr.duperow td { background: #FFFBF0; }
+tbody tr.duperow:hover td { background: #FFF5D6; }
 
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
 .pill-dupe { background: #FFF3CD; color: #856404; }
-tbody tr.duperow td { background: #FFFBF0; }
-tbody tr.duperow:hover td { background: #FFF5D6; }
 
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
 
@@ -464,6 +381,34 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
 .action-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
 .action-btn.primary { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
 .action-btn.primary:hover { background: var(--burgundy-bright); }
+
+#key-setup input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  outline: none;
+  margin-bottom: 6px;
+}
+
+#key-setup button {
+  width: 100%;
+  background: var(--burgundy);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 </style>
 </head>
 <body>
@@ -509,8 +454,8 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
       </div>
       <div id="key-setup" style="display:none">
         <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
-        <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." style="width:100%;background:#F9F6F3;border:1px solid #DDD5CC;border-radius:6px;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#1C1C1E;outline:none;margin-bottom:6px" />
-        <button onclick="saveClaudeKey()" style="width:100%;background:#6B1E2E;color:#fff;border:none;border-radius:6px;padding:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em">Save Key</button>
+        <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." />
+        <button onclick="saveClaudeKey()">Save Key</button>
       </div>
     </div>
   </aside>
@@ -549,7 +494,7 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
         <div class="upload-zone-icon">📄</div>
         <div class="upload-zone-title">Upload Booklet PDF</div>
         <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
-        <div class="upload-zone-pill">Powered by Claude Haiku</div>
+        <div class="upload-zone-pill">Powered by Claude Vision</div>
       </div>
       <input type="file" id="pdf-file" accept=".pdf" />
 
@@ -612,7 +557,7 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
 var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0mjc-wuCBZ44-4A/exec';
 var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
 
-var records=[], ready=false, qcResults=[];
+var records = [], ready = false, qcResults = [];
 
 function norm(n){ return (n||'').replace(/\D/g,'').slice(-10); }
 function setStat(id,v){ var e=document.getElementById(id); e.textContent=v.toLocaleString(); e.classList.remove('loading'); }
@@ -627,9 +572,9 @@ function showPanel(p){
 }
 
 function switchReport(t){
-  document.querySelectorAll('.rsw-btn').forEach(function(e,i){ e.classList.toggle('active',['all','flags'][i]===t); });
-  document.getElementById('report-all').classList.toggle('active',t==='all');
-  document.getElementById('report-flags').classList.toggle('active',t==='flags');
+  document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
+  document.getElementById('report-all').classList.toggle('active', t==='all');
+  document.getElementById('report-flags').classList.toggle('active', t==='flags');
 }
 
 var inp=document.getElementById('inp'), btn=document.getElementById('btn');
@@ -650,7 +595,7 @@ function showResult(r){
   resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
   var plat=(r.platform||'').toUpperCase(), book=(r.book||'').toUpperCase();
   foundLabel.className='result-status-label ok'; foundLabel.textContent='● MATCH FOUND';
-  badgesEl.appendChild(rbadge(plat||'CALLSOURCE',plat==='CONVIRZA'?'rb-cv':'rb-cs'));
+  badgesEl.appendChild(rbadge(plat||'CALLSOURCE', plat==='CONVIRZA'?'rb-cv':'rb-cs'));
   if(book==='THIG') badgesEl.appendChild(rbadge('THIG','rb-thig'));
   else if(book==='LST') badgesEl.appendChild(rbadge('LST','rb-lst'));
   else if(book==='BAY') badgesEl.appendChild(rbadge('BAY','rb-bay'));
@@ -707,10 +652,9 @@ async function startScan(file){
   uploadZone.style.display='none';
   document.getElementById('qc-results').classList.remove('show');
   document.getElementById('scan-progress').classList.add('show');
-  setScanState('Reading PDF...',(file.size/1024/1024).toFixed(1)+' MB');
+  setScanState('Reading PDF...', (file.size/1024/1024).toFixed(1)+' MB');
 
   try {
-    // Convert PDF to base64
     var base64 = await new Promise(function(resolve, reject){
       var reader = new FileReader();
       reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
@@ -736,11 +680,7 @@ async function startScan(file){
           content: [
             {
               type: 'document',
-              source: {
-                type: 'base64',
-                media_type: 'application/pdf',
-                data: base64
-              }
+              source: { type: 'base64', media_type: 'application/pdf', data: base64 }
             },
             {
               type: 'text',
@@ -754,7 +694,7 @@ async function startScan(file){
     var json = await response.json();
     if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
 
-    var text = json.content&&json.content[0] ? json.content[0].text : '[]';
+    var text = json.content && json.content[0] ? json.content[0].text : '[]';
     text = text.replace(/```json|```/g,'').trim();
     var parsed = JSON.parse(text);
 
@@ -771,15 +711,15 @@ async function startScan(file){
 function fmtPhone(n){ return String(n).replace(/(\d{3})(\d{3})(\d{4})/,'($1) $2-$3'); }
 
 function buildReport(data){
-  qcResults=[];
-  var tbAll=document.getElementById('tbody-all');
-  var tbFlags=document.getElementById('tbody-flags');
+  qcResults = [];
+  var tbAll = document.getElementById('tbody-all');
+  var tbFlags = document.getElementById('tbody-flags');
   tbAll.innerHTML=''; tbFlags.innerHTML='';
   var matched=0, flagged=0;
 
   data.sort(function(a,b){ return a.page-b.page; });
 
-  // Find duplicate numbers — same number on multiple pages
+  // Find duplicate numbers
   var numPages={};
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
@@ -788,7 +728,7 @@ function buildReport(data){
     if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
   });
 
-  // Find duplicate ads — same customer+trade on multiple pages
+  // Find duplicate ads
   var adPages={};
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
@@ -798,55 +738,47 @@ function buildReport(data){
     var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
     if(!adPages[key]) adPages[key]=[];
     var exists=adPages[key].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
-    if(!exists) adPages[key].push({page:item.page,num:num});
+    if(!exists) adPages[key].push({page:item.page, num:num});
   });
 
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
     var pg=item.page;
     if(num.length!==10) return;
+
     var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
     var isMatch=!!rec;
     var isDupeNum=numPages[num]&&numPages[num].length>1;
     var isDupeAd=false;
     var dupeAdPages=[];
+
     if(rec){
       var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
       if(adPages[key]&&adPages[key].length>1){ isDupeAd=true; dupeAdPages=adPages[key]; }
     }
+
     if(isMatch) matched++; else flagged++;
 
-    // Check for mismatch — number is in dataset but ad name/trade don't match
-    var adName = (item.ad_name||'').toUpperCase().trim();
-    var adTrade = (item.ad_trade||'').toUpperCase().trim();
-    var isMismatch = false;
-    if(isMatch && rec && adName){
-      var dbName = (rec.customer||'').toUpperCase().trim();
-      var dbTrade = (rec.trade||'').toUpperCase().trim();
-      // Check if ad name contains any significant word from db name or vice versa
-      var dbWords = dbName.split(/\s+/).filter(function(w){ return w.length > 3; });
-      var nameMatch = dbWords.some(function(w){ return adName.indexOf(w) > -1; }) || adName.indexOf(dbName) > -1 || dbName.indexOf(adName) > -1;
-      // Trade check — partial match is fine
-      var tradeMatch = !adTrade || dbTrade.indexOf(adTrade) > -1 || adTrade.indexOf(dbTrade) > -1 || adTrade.split(/\s+/).some(function(w){ return w.length>3 && dbTrade.indexOf(w)>-1; });
-      if(!nameMatch || !tradeMatch) isMismatch = true;
-    }
+    var status = !isMatch ? 'NOT FOUND' : isDupeNum ? 'DUPLICATE NUMBER' : isDupeAd ? 'DUPLICATE AD' : 'MATCH';
 
-    var status=!isMatch?'NOT FOUND':isMismatch?'MISMATCH':isDupeNum?'DUPLICATE NUMBER':isDupeAd?'DUPLICATE AD':'MATCH';
-    qcResults.push({page:pg,num:num,status:status,
-      customer:rec?rec.customer:'',trade:rec?rec.trade:'',
-      ad_name:item.ad_name||'',ad_trade:item.ad_trade||'',
-      zone:rec?rec.zone:'',book:rec?rec.book:'',platform:rec?rec.platform:''});
+    qcResults.push({
+      page:pg, num:num, status:status,
+      customer:rec?rec.customer:'',
+      trade:rec?rec.trade:'',
+      zone:rec?rec.zone:'',
+      book:rec?rec.book:'',
+      platform:rec?rec.platform:''
+    });
 
     var tr=document.createElement('tr');
     if(!isMatch) tr.className='flagrow';
-    else if(isMismatch) tr.className='flagrow';
     else if(isDupeNum||isDupeAd) tr.className='duperow';
 
-    var pill=!isMatch?'<span class="pill pill-miss">✕ Not Found</span>'
-      :isMismatch?'<span class="pill pill-miss">⚠ Mismatch</span>'
-      :isDupeNum?'<span class="pill pill-dupe">⚠ Dup. Number</span>'
-      :isDupeAd?'<span class="pill pill-dupe">⚠ Dup. Ad</span>'
-      :'<span class="pill pill-match">✓ Match</span>';
+    var pill = !isMatch
+      ? '<span class="pill pill-miss">✕ Not Found</span>'
+      : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
+      : isDupeAd  ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+      : '<span class="pill pill-match">✓ Match</span>';
 
     tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
       +'<td>'+pill+'</td>'
@@ -861,10 +793,6 @@ function buildReport(data){
       var tr2=document.createElement('tr'); tr2.className='flagrow';
       tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
       tbFlags.appendChild(tr2);
-    } else if(isMismatch){
-      var trM=document.createElement('tr'); trM.className='flagrow';
-      trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Mismatch — ad shows: "'+(item.ad_name||'?')+'" / '+(item.ad_trade||'?')+' — dataset has: "'+(rec?rec.customer:'?')+'" / '+(rec?rec.trade||'?')+'</td>';
-      tbFlags.appendChild(trM);
     } else if(isDupeNum){
       var tr3=document.createElement('tr'); tr3.className='duperow';
       tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
@@ -900,14 +828,15 @@ function exportCSV(){
   var csv=rows.map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
   var a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='trackstream_qc_report.csv'; a.click();
+  a.download='trackstream_qc_report.csv';
+  a.click();
 }
 
 function saveClaudeKey(){
-  var k = document.getElementById('claude-key-input').value.trim();
+  var k=document.getElementById('claude-key-input').value.trim();
   if(!k){ alert('Please paste your Anthropic API key'); return; }
   localStorage.setItem('ts2_claude_key', k);
-  CLAUDE_KEY = k;
+  CLAUDE_KEY=k;
   document.getElementById('key-setup').style.display='none';
   alert('Key saved. You can now use the Booklet QC scanner.');
 }
@@ -918,9 +847,8 @@ if(!CLAUDE_KEY){
   });
 }
 
-// Load records via JSONP — bypasses CORS from GitHub Pages
-function processRecords(json) {
-  if(!json.records) { 
+function processRecords(json){
+  if(!json.records){
     setLookupStatus('Failed to load records','err');
     setConn('err','Connection failed');
     ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
@@ -928,18 +856,18 @@ function processRecords(json) {
   }
   records=json.records.map(function(r){
     return {
-      tracking_number:r.tn||r.tracking_number||'',
-      platform:r.platform||'',
-      book:r.book||'',
-      customer:r.customer||'',
-      trade:r.trade||'',
-      zone:r.zone||'',
-      target_number:r.target||r.target_number||'',
-      source:r.source||'',
-      convirza_tn_id:r.conv_id||r.convirza_tn_id||'',
-      convirza_tn_name:r.conv_name||r.convirza_tn_name||'',
-      convirza_campaign:r.conv_campaign||r.convirza_campaign||'',
-      convirza_status:r.conv_status||r.convirza_status||''
+      tracking_number: r.tn||r.tracking_number||'',
+      platform: r.platform||'',
+      book: r.book||'',
+      customer: r.customer||'',
+      trade: r.trade||'',
+      zone: r.zone||'',
+      target_number: r.target||r.target_number||'',
+      source: r.source||'',
+      convirza_tn_id: r.conv_id||r.convirza_tn_id||'',
+      convirza_tn_name: r.conv_name||r.convirza_tn_name||'',
+      convirza_campaign: r.conv_campaign||r.convirza_campaign||'',
+      convirza_status: r.conv_status||r.convirza_status||''
     };
   });
   ready=true;
