@@ -757,9 +757,24 @@ function buildReport(data){
       if(adPages[key]&&adPages[key].length>1){ isDupeAd=true; dupeAdPages=adPages[key]; }
     }
 
+    // Mismatch check — number found in DB but ad name/trade don't match
+    var isMismatch=false;
+    if(isMatch && rec){
+      var adName=(item.ad_name||'').toUpperCase().trim();
+      var adTrade=(item.ad_trade||'').toUpperCase().trim();
+      if(adName){
+        var dbName=(rec.customer||'').toUpperCase().trim();
+        var dbTrade=(rec.trade||'').toUpperCase().trim();
+        var dbWords=dbName.split(/\s+/).filter(function(w){ return w.length>3; });
+        var nameMatch=dbWords.some(function(w){ return adName.indexOf(w)>-1; })||adName.indexOf(dbName)>-1||dbName.indexOf(adName)>-1;
+        var tradeMatch=!adTrade||dbTrade.indexOf(adTrade)>-1||adTrade.indexOf(dbTrade)>-1||adTrade.split(/\s+/).some(function(w){ return w.length>3&&dbTrade.indexOf(w)>-1; });
+        if(!nameMatch||!tradeMatch) isMismatch=true;
+      }
+    }
+
     if(isMatch) matched++; else flagged++;
 
-    var status = !isMatch ? 'NOT FOUND' : isDupeNum ? 'DUPLICATE NUMBER' : isDupeAd ? 'DUPLICATE AD' : 'MATCH';
+    var status = !isMatch ? 'NOT FOUND' : isMismatch ? 'MISMATCH' : isDupeNum ? 'DUPLICATE NUMBER' : isDupeAd ? 'DUPLICATE AD' : 'MATCH';
 
     qcResults.push({
       page:pg, num:num, status:status,
@@ -772,10 +787,12 @@ function buildReport(data){
 
     var tr=document.createElement('tr');
     if(!isMatch) tr.className='flagrow';
+    else if(isMismatch) tr.className='flagrow';
     else if(isDupeNum||isDupeAd) tr.className='duperow';
 
     var pill = !isMatch
       ? '<span class="pill pill-miss">✕ Not Found</span>'
+      : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
       : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
       : isDupeAd  ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
       : '<span class="pill pill-match">✓ Match</span>';
@@ -793,6 +810,10 @@ function buildReport(data){
       var tr2=document.createElement('tr'); tr2.className='flagrow';
       tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
       tbFlags.appendChild(tr2);
+    } else if(isMismatch){
+      var trM=document.createElement('tr'); trM.className='flagrow';
+      trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Mismatch: '+(item.ad_name||'?')+' / '+(item.ad_trade||'?')+' -- DB has: '+(rec?rec.customer:'?')+' / '+(rec?(rec.trade||'?'):'?')+'</td>';
+      tbFlags.appendChild(trM);
     } else if(isDupeNum){
       var tr3=document.createElement('tr'); tr3.className='duperow';
       tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
