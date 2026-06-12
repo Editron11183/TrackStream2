@@ -360,6 +360,9 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
 .pill-dupe { background: #FFF3CD; color: #856404; }
+.pill-multi { background: #E8F4FD; color: #1A5276; }
+tbody tr.multirow td { background: #F0F8FF; }
+tbody tr.multirow:hover td { background: #E8F4FD; }
 
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
 
@@ -719,7 +722,7 @@ function buildReport(data){
 
   data.sort(function(a,b){ return a.page-b.page; });
 
-  // Find duplicate numbers
+  // Track pages per tracking number (for duplicate number detection)
   var numPages={};
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
@@ -728,7 +731,8 @@ function buildReport(data){
     if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
   });
 
-  // Find duplicate ads
+  // Track pages per customer+trade combo (for duplicate ad detection)
+  // Key: CUSTOMER|TRADE — same company same trade on multiple pages = real duplicate
   var adPages={};
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
@@ -741,6 +745,20 @@ function buildReport(data){
     if(!exists) adPages[key].push({page:item.page, num:num});
   });
 
+  // Track pages per customer only (for multi-ad detection)
+  // Key: CUSTOMER — same company different trades = intentional multi-ad, not a problem
+  var customerPages={};
+  data.forEach(function(item){
+    var num=String(item.number).replace(/\D/g,'');
+    if(num.length!==10) return;
+    var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
+    if(!rec) return;
+    var ckey=(rec.customer||'').toUpperCase().trim();
+    if(!customerPages[ckey]) customerPages[ckey]=[];
+    var exists=customerPages[ckey].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
+    if(!exists) customerPages[ckey].push({page:item.page, num:num, trade:(rec.trade||'').toUpperCase().trim()});
+  });
+
   data.forEach(function(item){
     var num=String(item.number).replace(/\D/g,'');
     var pg=item.page;
@@ -748,16 +766,37 @@ function buildReport(data){
 
     var rec=records.filter(function(r){ return norm(r.tracking_number)===num; })[0];
     var isMatch=!!rec;
+
+    // Duplicate number: same TN appears on multiple pages
     var isDupeNum=numPages[num]&&numPages[num].length>1;
+
+    // Duplicate ad: same customer AND same trade on multiple pages (real problem)
     var isDupeAd=false;
     var dupeAdPages=[];
 
+    // Multi-ad: same customer but DIFFERENT trades on multiple pages (expected/OK)
+    var isMultiAd=false;
+    var multiAdInfo=[];
+
     if(rec){
       var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
-      if(adPages[key]&&adPages[key].length>1){ isDupeAd=true; dupeAdPages=adPages[key]; }
+      if(adPages[key]&&adPages[key].length>1){
+        isDupeAd=true;
+        dupeAdPages=adPages[key];
+      }
+      var ckey=(rec.customer||'').toUpperCase().trim();
+      if(!isDupeAd && customerPages[ckey]&&customerPages[ckey].length>1){
+        // Same customer, multiple entries — check if trades differ
+        var trades=customerPages[ckey].map(function(e){ return e.trade; });
+        var uniqueTrades=trades.filter(function(t,i){ return trades.indexOf(t)===i; });
+        if(uniqueTrades.length>1){
+          isMultiAd=true;
+          multiAdInfo=customerPages[ckey];
+        }
+      }
     }
 
-    // Mismatch check — number found in DB but ad name/trade don't match
+    // Mismatch: TN is in DB but the ad name/trade on the page doesn't match DB record
     var isMismatch=false;
     if(isMatch && rec){
       var adName=(item.ad_name||'').toUpperCase().trim();
@@ -774,7 +813,12 @@ function buildReport(data){
 
     if(isMatch) matched++; else flagged++;
 
-    var status = !isMatch ? 'NOT FOUND' : isMismatch ? 'MISMATCH' : isDupeNum ? 'DUPLICATE NUMBER' : isDupeAd ? 'DUPLICATE AD' : 'MATCH';
+    var status = !isMatch ? 'NOT FOUND'
+      : isMismatch ? 'MISMATCH'
+      : isDupeNum ? 'DUPLICATE NUMBER'
+      : isDupeAd ? 'DUPLICATE AD'
+      : isMultiAd ? 'MULTI-AD'
+      : 'MATCH';
 
     qcResults.push({
       page:pg, num:num, status:status,
@@ -786,15 +830,16 @@ function buildReport(data){
     });
 
     var tr=document.createElement('tr');
-    if(!isMatch) tr.className='flagrow';
-    else if(isMismatch) tr.className='flagrow';
+    if(!isMatch||isMismatch) tr.className='flagrow';
     else if(isDupeNum||isDupeAd) tr.className='duperow';
+    else if(isMultiAd) tr.className='multirow';
 
     var pill = !isMatch
       ? '<span class="pill pill-miss">✕ Not Found</span>'
-      : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
-      : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
-      : isDupeAd  ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+      : isMismatch   ? '<span class="pill pill-miss">⚠ Mismatch</span>'
+      : isDupeNum    ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
+      : isDupeAd     ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+      : isMultiAd    ? '<span class="pill pill-multi">✓ Multi-Ad</span>'
       : '<span class="pill pill-match">✓ Match</span>';
 
     tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
@@ -821,9 +866,10 @@ function buildReport(data){
     } else if(isDupeAd){
       var tr4=document.createElement('tr'); tr4.className='duperow';
       var pageList=dupeAdPages.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
-      tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — dup. ad on: '+pageList+'</td>';
+      tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — same trade on: '+pageList+'</td>';
       tbFlags.appendChild(tr4);
     }
+    // MULTI-AD is intentional — does not appear in flags tab, only in full report
   });
 
   document.getElementById('qc-total').textContent=matched+flagged;
