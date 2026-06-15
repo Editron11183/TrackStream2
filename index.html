@@ -209,11 +209,12 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
     <div class="scan-detail" id="scan-detail">Preparing file</div>
    </div>
    <div class="qc-results" id="qc-results">
-    <div class="qc-scorecards">
+    <div class="qc-scorecards" style="grid-template-columns:repeat(5,1fr)">
      <div class="scorecard"><div class="sc-val blue" id="qc-total">0</div><div class="sc-label">Total Found</div></div>
      <div class="scorecard"><div class="sc-val green" id="qc-matched">0</div><div class="sc-label">Matched</div></div>
      <div class="scorecard"><div class="sc-val red" id="qc-notfound">0</div><div class="sc-label">Not Found</div></div>
      <div class="scorecard"><div class="sc-val gold" id="qc-flags">0</div><div class="sc-label">Flags</div></div>
+     <div class="scorecard"><div class="sc-val" style="color:#555" id="qc-blank">0</div><div class="sc-label">Blank Pages</div></div>
     </div>
     <div class="report-switcher">
      <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
@@ -221,6 +222,7 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
      <button class="rsw-btn" onclick="switchReport('mismatch')">⚠ Mismatches</button>
      <button class="rsw-btn" onclick="switchReport('dupenum')">⚠ Dup. Numbers</button>
      <button class="rsw-btn" onclick="switchReport('dupead')">⚠ Dup. Ads</button>
+     <button class="rsw-btn" onclick="switchReport('blank')">⬜ Blank Pages</button>
     </div>
     <!-- Full Report -->
     <div class="report-view active" id="report-all">
@@ -267,6 +269,15 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
       </table>
      </div>
     </div>
+    <!-- Blank Pages -->
+    <div class="report-view" id="report-blank">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Page</th><th>Note</th></tr></thead>
+       <tbody id="tbody-blank"></tbody>
+      </table>
+     </div>
+    </div>
     <div class="qc-actions">
      <button class="action-btn gold" onclick="exportAll()">Export All Reports</button>
      <button class="action-btn primary" onclick="exportCurrent()">Export Current View</button>
@@ -287,6 +298,7 @@ var notFoundResults = [];  // NOT FOUND only
 var mismatchResults = [];  // MISMATCH only: + ad_name, ad_trade
 var dupeNumResults = [];   // duplicate numbers: {num, customer, pages[]}
 var dupeAdResults = [];    // duplicate ads: {customer, trade, entries[{page,num}]}
+var blankPageResults = []; // blank pages: {page}
 
 var currentReport = 'all';
 
@@ -405,18 +417,21 @@ async function startScan(file){
      role: 'user',
      content: [
       { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
-      { type: 'text', text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}]. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, do not include any explanation.' }
+      { type: 'text', text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Also identify any pages that appear blank or contain no ad content at all. Return ONLY a valid JSON object with two keys, nothing else: {"ads":[{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}],"blank_pages":[5,18]}. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, blank_pages is an array of page numbers that had no ad content, do not include any explanation.' }
      ]
     }]
    })
   });
   var json = await response.json();
   if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
-  var text = json.content && json.content[0] ? json.content[0].text : '[]';
+  var text = json.content && json.content[0] ? json.content[0].text : '{}';
   text = text.replace(/```json|```/g,'').trim();
   var parsed = JSON.parse(text);
+  // Support both old array format and new {ads, blank_pages} object format
+  var adsData = Array.isArray(parsed) ? parsed : (parsed.ads || []);
+  var blankData = Array.isArray(parsed) ? [] : (parsed.blank_pages || []);
   document.getElementById('scan-progress').classList.remove('show');
-  runChecks(parsed);
+  runChecks(adsData, blankData);
  } catch(err){
   document.getElementById('scan-progress').classList.remove('show');
   uploadZone.style.display='block';
@@ -511,8 +526,13 @@ function checkDupeAds(){
  });
 }
 
+// Check 5: Blank pages — pages Claude flagged as having no ad content
+function checkBlankPages(blankData){
+ blankPageResults = (blankData || []).map(function(p){ return { page: p }; });
+}
+
 // ── RUN ALL CHECKS & RENDER ──────────────────────────────────────────────────
-function runChecks(data){
+function runChecks(data, blankData){
  data.sort(function(a,b){ return a.page - b.page; });
 
  checkBase(data);
@@ -520,6 +540,7 @@ function runChecks(data){
  checkMismatch();
  checkDupeNumbers();
  checkDupeAds();
+ checkBlankPages(blankData);
 
  renderAll();
 }
@@ -529,10 +550,14 @@ function renderAll(){
  var matched = baseResults.filter(function(r){ return r.status==='MATCH'; }).length;
  var notfound = notFoundResults.length;
  var flags = mismatchResults.length + dupeNumResults.length + dupeAdResults.length;
+ var blanks = blankPageResults.length;
  document.getElementById('qc-total').textContent = baseResults.length;
  document.getElementById('qc-matched').textContent = matched;
  document.getElementById('qc-notfound').textContent = notfound;
  document.getElementById('qc-flags').textContent = flags;
+ var blankEl = document.getElementById('qc-blank');
+ blankEl.textContent = blanks;
+ blankEl.style.color = blanks > 0 ? '#555' : 'var(--green)';
 
  // Full report
  var tbAll = document.getElementById('tbody-all');
@@ -616,6 +641,19 @@ function renderAll(){
   });
  }
 
+ // Blank Pages tab
+ var tbBL = document.getElementById('tbody-blank');
+ tbBL.innerHTML = '';
+ if(blankPageResults.length === 0){
+  tbBL.innerHTML = '<tr><td colspan="2" class="empty-state">✓ No blank pages detected</td></tr>';
+ } else {
+  blankPageResults.forEach(function(r){
+   var tr = document.createElement('tr'); tr.className='flagrow';
+   tr.innerHTML = '<td>'+r.page+'</td><td>No ad content detected on this page</td>';
+   tbBL.appendChild(tr);
+  });
+ }
+
  document.getElementById('qc-results').classList.add('show');
 }
 
@@ -652,6 +690,10 @@ function exportCurrent(){
   var rows = [['Customer','Trade','Pages and Numbers']];
   dupeAdResults.forEach(function(r){ rows.push([r.customer, r.trade, r.entries.map(function(e){ return 'p.'+e.page+' ('+e.num+')'; }).join(', ')]); });
   csv = makeCSV(rows); filename = 'qc_duplicate_ads.csv';
+ } else if(currentReport === 'blank'){
+  var rows = [['Page','Note']];
+  blankPageResults.forEach(function(r){ rows.push([r.page, 'No ad content detected']); });
+  csv = makeCSV(rows); filename = 'qc_blank_pages.csv';
  }
  if(csv) downloadCSV(csv, filename);
 }
@@ -689,13 +731,20 @@ function exportAll(){
   dupeAdResults.forEach(function(r){ r5.push([r.customer, r.trade, r.entries.map(function(e){ return 'p.'+e.page+' ('+e.num+')'; }).join(', ')]); });
   downloadCSV(makeCSV(r5), 'qc_duplicate_ads.csv');
  }, 1200);
+
+ setTimeout(function(){
+  // Blank Pages
+  var r6 = [['Page','Note']];
+  blankPageResults.forEach(function(r){ r6.push([r.page, 'No ad content detected']); });
+  downloadCSV(makeCSV(r6), 'qc_blank_pages.csv');
+ }, 1500);
 }
 
 function resetQC(){
  document.getElementById('qc-results').classList.remove('show');
  uploadZone.style.display='block';
  pdfFile.value='';
- baseResults=[]; notFoundResults=[]; mismatchResults=[]; dupeNumResults=[]; dupeAdResults=[];
+ baseResults=[]; notFoundResults=[]; mismatchResults=[]; dupeNumResults=[]; dupeAdResults=[]; blankPageResults=[];
 }
 
 function saveClaudeKey(){
