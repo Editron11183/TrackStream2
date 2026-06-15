@@ -99,22 +99,23 @@ input[type=file] { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .scan-stage { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
 .scan-detail { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
-.qc-results { display: none; max-width: 860px; }
+.qc-results { display: none; max-width: 900px; }
 .qc-results.show { display: block; }
-.qc-scorecards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+.qc-scorecards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
 .scorecard { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; }
 .sc-val { font-size: 26px; font-weight: 700; font-family: var(--mono); margin-bottom: 4px; }
 .sc-val.blue { color: #1A5276; }
 .sc-val.green { color: var(--green); }
 .sc-val.red { color: var(--red); }
+.sc-val.gold { color: var(--gold); }
 .sc-label { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
-.report-switcher { display: flex; gap: 4px; margin-bottom: 14px; }
+.report-switcher { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
 .rsw-btn { padding: 7px 16px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.15s; }
 .rsw-btn:hover { color: var(--text); }
 .rsw-btn.active { background: var(--burgundy); color: #fff; border-color: var(--burgundy); }
 .report-view { display: none; }
 .report-view.active { display: block; }
-.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-height: 460px; overflow-y: auto; }
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-height: 420px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead th { background: var(--surface2); padding: 9px 12px; text-align: left; font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
 tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border2); font-family: var(--mono); font-size: 11px; color: var(--text); vertical-align: top; }
@@ -124,18 +125,18 @@ tbody tr.flagrow td { background: #FFF0F0; }
 tbody tr.flagrow:hover td { background: #FFE5E5; }
 tbody tr.duperow td { background: #FFFBF0; }
 tbody tr.duperow:hover td { background: #FFF5D6; }
-tbody tr.multirow td { background: #F0F8FF; }
-tbody tr.multirow:hover td { background: #E8F4FD; }
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
 .pill-dupe { background: #FFF3CD; color: #856404; }
-.pill-multi { background: #E8F4FD; color: #1A5276; }
-.qc-actions { display: flex; gap: 10px; margin-top: 14px; }
+.empty-state { text-align: center; padding: 24px; color: var(--green); font-family: var(--mono); font-size: 11px; }
+.qc-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
 .action-btn { padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.15s; }
 .action-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
 .action-btn.primary { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
 .action-btn.primary:hover { background: var(--burgundy-bright); }
+.action-btn.gold { background: var(--gold); border-color: var(--gold); color: #fff; }
+.action-btn.gold:hover { opacity: 0.85; }
 #key-setup input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; color: var(--text); outline: none; margin-bottom: 6px; }
 #key-setup button { width: 100%; background: var(--burgundy); color: #fff; border: none; border-radius: 6px; padding: 8px; font-family: var(--sans); font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
 </style>
@@ -209,14 +210,19 @@ tbody tr.multirow:hover td { background: #E8F4FD; }
    </div>
    <div class="qc-results" id="qc-results">
     <div class="qc-scorecards">
-     <div class="scorecard"><div class="sc-val blue" id="qc-total">0</div><div class="sc-label">Numbers Found</div></div>
+     <div class="scorecard"><div class="sc-val blue" id="qc-total">0</div><div class="sc-label">Total Found</div></div>
      <div class="scorecard"><div class="sc-val green" id="qc-matched">0</div><div class="sc-label">Matched</div></div>
-     <div class="scorecard"><div class="sc-val red" id="qc-flagged">0</div><div class="sc-label">Review Required</div></div>
+     <div class="scorecard"><div class="sc-val red" id="qc-notfound">0</div><div class="sc-label">Not Found</div></div>
+     <div class="scorecard"><div class="sc-val gold" id="qc-flags">0</div><div class="sc-label">Flags</div></div>
     </div>
     <div class="report-switcher">
      <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
-     <button class="rsw-btn" onclick="switchReport('flags')">⚠ Flags Only</button>
+     <button class="rsw-btn" onclick="switchReport('notfound')">✕ Not Found</button>
+     <button class="rsw-btn" onclick="switchReport('mismatch')">⚠ Mismatches</button>
+     <button class="rsw-btn" onclick="switchReport('dupenum')">⚠ Dup. Numbers</button>
+     <button class="rsw-btn" onclick="switchReport('dupead')">⚠ Dup. Ads</button>
     </div>
+    <!-- Full Report -->
     <div class="report-view active" id="report-all">
      <div class="table-wrap">
       <table>
@@ -225,16 +231,45 @@ tbody tr.multirow:hover td { background: #E8F4FD; }
       </table>
      </div>
     </div>
-    <div class="report-view" id="report-flags">
+    <!-- Not Found -->
+    <div class="report-view" id="report-notfound">
      <div class="table-wrap">
       <table>
        <thead><tr><th>Page</th><th>Number</th><th>Note</th></tr></thead>
-       <tbody id="tbody-flags"></tbody>
+       <tbody id="tbody-notfound"></tbody>
+      </table>
+     </div>
+    </div>
+    <!-- Mismatches -->
+    <div class="report-view" id="report-mismatch">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Page</th><th>Number</th><th>Ad Shows</th><th>DB Has</th></tr></thead>
+       <tbody id="tbody-mismatch"></tbody>
+      </table>
+     </div>
+    </div>
+    <!-- Duplicate Numbers -->
+    <div class="report-view" id="report-dupenum">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Number</th><th>Customer</th><th>Pages</th></tr></thead>
+       <tbody id="tbody-dupenum"></tbody>
+      </table>
+     </div>
+    </div>
+    <!-- Duplicate Ads -->
+    <div class="report-view" id="report-dupead">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Customer</th><th>Trade</th><th>Pages / Numbers</th></tr></thead>
+       <tbody id="tbody-dupead"></tbody>
       </table>
      </div>
     </div>
     <div class="qc-actions">
-     <button class="action-btn primary" onclick="exportCSV()">Export CSV</button>
+     <button class="action-btn gold" onclick="exportAll()">Export All Reports</button>
+     <button class="action-btn primary" onclick="exportCurrent()">Export Current View</button>
      <button class="action-btn" onclick="resetQC()">Scan Another</button>
     </div>
    </div>
@@ -244,9 +279,19 @@ tbody tr.multirow:hover td { background: #E8F4FD; }
 <script>
 var BACKEND = 'https://script.google.com/macros/s/AKfycbyHkfJNsnFVNAkYLBOnsF4hNUCQ2l0DtiUS8eRBVdp7V5K1cwlIxKFh2xoWgCUSDPnkRw/exec';
 var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
-var records = [], ready = false, qcResults = [];
+var records = [], ready = false;
+
+// Scan results storage — one array per check
+var baseResults = [];      // all rows: {page, num, status, customer, trade, zone, book, platform}
+var notFoundResults = [];  // NOT FOUND only
+var mismatchResults = [];  // MISMATCH only: + ad_name, ad_trade
+var dupeNumResults = [];   // duplicate numbers: {num, customer, pages[]}
+var dupeAdResults = [];    // duplicate ads: {customer, trade, entries[{page,num}]}
+
+var currentReport = 'all';
 
 function norm(n){ return (n||'').replace(/\D/g,'').slice(-10); }
+function fmtPhone(n){ return String(n).replace(/(\d{3})(\d{3})(\d{4})/,'($1) $2-$3'); }
 function setStat(id,v){ var e=document.getElementById(id); e.textContent=v.toLocaleString(); e.classList.remove('loading'); }
 function setConn(s,m){ document.getElementById('conn-dot').className='conn-dot '+s; document.getElementById('conn-label').textContent=m; }
 function setLookupStatus(m,c){ var s=document.getElementById('status'); s.textContent=m; s.className='lookup-status'+(c?' '+c:''); }
@@ -257,12 +302,16 @@ function showPanel(p){
  document.getElementById('panel-'+p).classList.add('active');
  document.getElementById('nav-'+p).classList.add('active');
 }
+
 function switchReport(t){
- document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
- document.getElementById('report-all').classList.toggle('active', t==='all');
- document.getElementById('report-flags').classList.toggle('active', t==='flags');
+ currentReport = t;
+ document.querySelectorAll('.rsw-btn').forEach(function(b){ b.classList.remove('active'); });
+ event.currentTarget.classList.add('active');
+ document.querySelectorAll('.report-view').forEach(function(v){ v.classList.remove('active'); });
+ document.getElementById('report-'+t).classList.add('active');
 }
 
+// ── LOOKUP ───────────────────────────────────────────────────────────────────
 var inp=document.getElementById('inp'), btn=document.getElementById('btn');
 var resultEl=document.getElementById('result'), foundLabel=document.getElementById('found-label');
 var badgesEl=document.getElementById('badges'), bodyEl=document.getElementById('result-body');
@@ -316,6 +365,7 @@ inp.addEventListener('keydown',function(e){ if(e.key==='Enter') doLookup(); });
 btn.addEventListener('click',doLookup);
 inp.addEventListener('input',function(){ if(ready){ resultEl.classList.remove('show'); setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok'); }});
 
+// ── SCAN ─────────────────────────────────────────────────────────────────────
 var uploadZone=document.getElementById('upload-zone');
 var pdfFile=document.getElementById('pdf-file');
 uploadZone.addEventListener('dragover',function(e){ e.preventDefault(); uploadZone.classList.add('drag'); });
@@ -366,7 +416,7 @@ async function startScan(file){
   text = text.replace(/```json|```/g,'').trim();
   var parsed = JSON.parse(text);
   document.getElementById('scan-progress').classList.remove('show');
-  buildReport(parsed);
+  runChecks(parsed);
  } catch(err){
   document.getElementById('scan-progress').classList.remove('show');
   uploadZone.style.display='block';
@@ -374,105 +424,278 @@ async function startScan(file){
  }
 }
 
-function fmtPhone(n){ return String(n).replace(/(\d{3})(\d{3})(\d{4})/,'($1) $2-$3'); }
+// ── CHECK FUNCTIONS ──────────────────────────────────────────────────────────
 
-function buildReport(data){
- qcResults = [];
- var tbAll = document.getElementById('tbody-all');
- var tbFlags = document.getElementById('tbody-flags');
- tbAll.innerHTML=''; tbFlags.innerHTML='';
- var matched=0, flagged=0;
- data.sort(function(a,b){ return a.page-b.page; });
-
+// Base lookup: match every number against the master dataset
+function checkBase(data){
+ baseResults = [];
  data.forEach(function(item){
   var num = String(item.number).replace(/\D/g,'');
-  var pg = item.page;
   if(num.length !== 10) return;
   var rec = records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
-  var isMatch = !!rec;
-
-  // Mismatch: TN found in DB but ad name/trade don't match
-  var isMismatch = false;
-  if(isMatch && rec){
-   var adName = (item.ad_name||'').toUpperCase().trim();
-   var adTrade = (item.ad_trade||'').toUpperCase().trim();
-   if(adName && adTrade){
-    var dbName = (rec.customer||'').toUpperCase().trim();
-    var dbTrade = (rec.trade||'').toUpperCase().trim();
-    var dbWords = dbName.split(/\s+/).filter(function(w){ return w.length>2; });
-    var adWords = adName.split(/\s+/).filter(function(w){ return w.length>2; });
-    var nameMatch = dbWords.some(function(w){ return adName.indexOf(w)>-1; })
-     || adWords.some(function(w){ return dbName.indexOf(w)>-1; })
-     || adName.indexOf(dbName)>-1 || dbName.indexOf(adName)>-1;
-    var tradeMatch = dbTrade.indexOf(adTrade)>-1 || adTrade.indexOf(dbTrade)>-1
-     || adTrade.split(/\s+/).some(function(w){ return w.length>2&&dbTrade.indexOf(w)>-1; })
-     || dbTrade.split(/\s+/).some(function(w){ return w.length>2&&adTrade.indexOf(w)>-1; });
-    if(!nameMatch && !tradeMatch) isMismatch = true;
-   }
-  }
-
-  if(isMatch && !isMismatch) matched++; else flagged++;
-
-  var status = !isMatch ? 'NOT FOUND' : isMismatch ? 'MISMATCH' : 'MATCH';
-
-  qcResults.push({
-   page:pg, num:num, status:status,
-   customer: rec?rec.customer:'',
-   trade: rec?rec.trade:'',
-   zone: rec?rec.zone:'',
-   book: rec?rec.book:'',
-   platform: rec?rec.platform:''
+  baseResults.push({
+   page: item.page,
+   num: num,
+   ad_name: item.ad_name || '',
+   ad_trade: item.ad_trade || '',
+   status: rec ? 'MATCH' : 'NOT FOUND',
+   rec: rec || null
   });
+ });
+}
 
-  var tr = document.createElement('tr');
-  if(!isMatch || isMismatch) tr.className = 'flagrow';
-  var pill = !isMatch
-   ? '<span class="pill pill-miss">✕ Not Found</span>'
-   : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
-   : '<span class="pill pill-match">✓ Match</span>';
-  tr.innerHTML = '<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+pill+'</td>'
-   +'<td>'+(rec?rec.customer:'—')+'</td>'
-   +'<td>'+(rec?rec.trade:'—')+'</td>'
-   +'<td>'+(rec?rec.zone:'—')+'</td>'
-   +'<td>'+(rec?rec.book:'—')+'</td>'
-   +'<td>'+(rec?rec.platform:'—')+'</td>';
-  tbAll.appendChild(tr);
+// Check 1: Not Found
+function checkNotFound(){
+ notFoundResults = baseResults.filter(function(r){ return r.status === 'NOT FOUND'; });
+}
 
-  if(!isMatch){
-   var tr2 = document.createElement('tr'); tr2.className='flagrow';
-   tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Not in master dataset — review required</td>';
-   tbFlags.appendChild(tr2);
-  } else if(isMismatch){
-   var trM = document.createElement('tr'); trM.className='flagrow';
-   trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Ad shows: "'+(item.ad_name||'?')+'" / '+(item.ad_trade||'?')+' — DB has: "'+(rec?rec.customer:'?')+'" / '+(rec?rec.trade:'?')+'</td>';
-   tbFlags.appendChild(trM);
+// Check 2: Mismatch — number is in DB but ad name/trade don't match
+function checkMismatch(){
+ mismatchResults = [];
+ baseResults.forEach(function(r){
+  if(r.status !== 'MATCH' || !r.rec) return;
+  var adName = r.ad_name.toUpperCase().trim();
+  var adTrade = r.ad_trade.toUpperCase().trim();
+  if(!adName || !adTrade) return;
+  var dbName = (r.rec.customer||'').toUpperCase().trim();
+  var dbTrade = (r.rec.trade||'').toUpperCase().trim();
+  var dbWords = dbName.split(/\s+/).filter(function(w){ return w.length>2; });
+  var adWords = adName.split(/\s+/).filter(function(w){ return w.length>2; });
+  var nameMatch = dbWords.some(function(w){ return adName.indexOf(w)>-1; })
+   || adWords.some(function(w){ return dbName.indexOf(w)>-1; })
+   || adName.indexOf(dbName)>-1 || dbName.indexOf(adName)>-1;
+  var tradeMatch = dbTrade.indexOf(adTrade)>-1 || adTrade.indexOf(dbTrade)>-1
+   || adTrade.split(/\s+/).some(function(w){ return w.length>2&&dbTrade.indexOf(w)>-1; })
+   || dbTrade.split(/\s+/).some(function(w){ return w.length>2&&adTrade.indexOf(w)>-1; });
+  if(!nameMatch && !tradeMatch){
+   mismatchResults.push({
+    page: r.page, num: r.num,
+    ad_name: r.ad_name, ad_trade: r.ad_trade,
+    db_name: r.rec.customer, db_trade: r.rec.trade
+   });
   }
  });
+}
 
- document.getElementById('qc-total').textContent = matched + flagged;
+// Check 3: Duplicate numbers — same TN on more than one page
+function checkDupeNumbers(){
+ dupeNumResults = [];
+ var numMap = {};
+ baseResults.forEach(function(r){
+  if(r.status !== 'MATCH') return;
+  if(!numMap[r.num]) numMap[r.num] = { customer: r.rec ? r.rec.customer : '—', pages: [] };
+  if(numMap[r.num].pages.indexOf(r.page) === -1) numMap[r.num].pages.push(r.page);
+ });
+ Object.keys(numMap).forEach(function(num){
+  if(numMap[num].pages.length > 1){
+   dupeNumResults.push({ num: num, customer: numMap[num].customer, pages: numMap[num].pages });
+  }
+ });
+}
+
+// Check 4: Duplicate ads — same customer + same trade on more than one page with different numbers
+function checkDupeAds(){
+ dupeAdResults = [];
+ var adMap = {};
+ baseResults.forEach(function(r){
+  if(r.status !== 'MATCH' || !r.rec) return;
+  var key = (r.rec.customer||'').toUpperCase().trim() + '|' + (r.rec.trade||'').toUpperCase().trim();
+  if(!adMap[key]) adMap[key] = { customer: r.rec.customer, trade: r.rec.trade, entries: [] };
+  var exists = adMap[key].entries.filter(function(e){ return e.page===r.page && e.num===r.num; }).length > 0;
+  if(!exists) adMap[key].entries.push({ page: r.page, num: r.num });
+ });
+ Object.keys(adMap).forEach(function(key){
+  if(adMap[key].entries.length > 1){
+   dupeAdResults.push(adMap[key]);
+  }
+ });
+}
+
+// ── RUN ALL CHECKS & RENDER ──────────────────────────────────────────────────
+function runChecks(data){
+ data.sort(function(a,b){ return a.page - b.page; });
+
+ checkBase(data);
+ checkNotFound();
+ checkMismatch();
+ checkDupeNumbers();
+ checkDupeAds();
+
+ renderAll();
+}
+
+function renderAll(){
+ // Scorecards
+ var matched = baseResults.filter(function(r){ return r.status==='MATCH'; }).length;
+ var notfound = notFoundResults.length;
+ var flags = mismatchResults.length + dupeNumResults.length + dupeAdResults.length;
+ document.getElementById('qc-total').textContent = baseResults.length;
  document.getElementById('qc-matched').textContent = matched;
- document.getElementById('qc-flagged').textContent = flagged;
+ document.getElementById('qc-notfound').textContent = notfound;
+ document.getElementById('qc-flags').textContent = flags;
 
- if(tbFlags.children.length === 0){
-  tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ No flags — all numbers matched</td></tr>';
+ // Full report
+ var tbAll = document.getElementById('tbody-all');
+ tbAll.innerHTML = '';
+ baseResults.forEach(function(r){
+  var isMismatch = mismatchResults.filter(function(m){ return m.num===r.num && m.page===r.page; }).length > 0;
+  var isDupeNum = dupeNumResults.filter(function(d){ return d.num===r.num; }).length > 0;
+  var isDupeAd = r.rec && dupeAdResults.filter(function(d){
+   return d.customer===r.rec.customer && d.trade===r.rec.trade;
+  }).length > 0;
+  var tr = document.createElement('tr');
+  if(r.status==='NOT FOUND' || isMismatch) tr.className='flagrow';
+  else if(isDupeNum || isDupeAd) tr.className='duperow';
+  var pill = r.status==='NOT FOUND'
+   ? '<span class="pill pill-miss">✕ Not Found</span>'
+   : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
+   : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
+   : isDupeAd ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+   : '<span class="pill pill-match">✓ Match</span>';
+  tr.innerHTML = '<td>'+r.page+'</td><td>'+fmtPhone(r.num)+'</td><td>'+pill+'</td>'
+   +'<td>'+(r.rec?r.rec.customer:'—')+'</td>'
+   +'<td>'+(r.rec?r.rec.trade:'—')+'</td>'
+   +'<td>'+(r.rec?r.rec.zone:'—')+'</td>'
+   +'<td>'+(r.rec?r.rec.book:'—')+'</td>'
+   +'<td>'+(r.rec?r.rec.platform:'—')+'</td>';
+  tbAll.appendChild(tr);
+ });
+
+ // Not Found tab
+ var tbNF = document.getElementById('tbody-notfound');
+ tbNF.innerHTML = '';
+ if(notFoundResults.length === 0){
+  tbNF.innerHTML = '<tr><td colspan="3" class="empty-state">✓ No missing numbers</td></tr>';
+ } else {
+  notFoundResults.forEach(function(r){
+   var tr = document.createElement('tr'); tr.className='flagrow';
+   tr.innerHTML = '<td>'+r.page+'</td><td>'+fmtPhone(r.num)+'</td><td>Not in master dataset</td>';
+   tbNF.appendChild(tr);
+  });
  }
+
+ // Mismatch tab
+ var tbMM = document.getElementById('tbody-mismatch');
+ tbMM.innerHTML = '';
+ if(mismatchResults.length === 0){
+  tbMM.innerHTML = '<tr><td colspan="4" class="empty-state">✓ No mismatches detected</td></tr>';
+ } else {
+  mismatchResults.forEach(function(r){
+   var tr = document.createElement('tr'); tr.className='flagrow';
+   tr.innerHTML = '<td>'+r.page+'</td><td>'+fmtPhone(r.num)+'</td>'
+    +'<td>'+r.ad_name+' / '+r.ad_trade+'</td>'
+    +'<td>'+r.db_name+' / '+r.db_trade+'</td>';
+   tbMM.appendChild(tr);
+  });
+ }
+
+ // Duplicate Numbers tab
+ var tbDN = document.getElementById('tbody-dupenum');
+ tbDN.innerHTML = '';
+ if(dupeNumResults.length === 0){
+  tbDN.innerHTML = '<tr><td colspan="3" class="empty-state">✓ No duplicate numbers</td></tr>';
+ } else {
+  dupeNumResults.forEach(function(r){
+   var tr = document.createElement('tr'); tr.className='duperow';
+   tr.innerHTML = '<td>'+fmtPhone(r.num)+'</td><td>'+r.customer+'</td><td>Pages: '+r.pages.join(', ')+'</td>';
+   tbDN.appendChild(tr);
+  });
+ }
+
+ // Duplicate Ads tab
+ var tbDA = document.getElementById('tbody-dupead');
+ tbDA.innerHTML = '';
+ if(dupeAdResults.length === 0){
+  tbDA.innerHTML = '<tr><td colspan="3" class="empty-state">✓ No duplicate ads</td></tr>';
+ } else {
+  dupeAdResults.forEach(function(r){
+   var tr = document.createElement('tr'); tr.className='duperow';
+   var detail = r.entries.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
+   tr.innerHTML = '<td>'+r.customer+'</td><td>'+r.trade+'</td><td>'+detail+'</td>';
+   tbDA.appendChild(tr);
+  });
+ }
+
  document.getElementById('qc-results').classList.add('show');
+}
+
+// ── EXPORT ───────────────────────────────────────────────────────────────────
+function makeCSV(rows){
+ return rows.map(function(r){ return r.map(function(v){ return '"'+(v||'').toString().replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+}
+function downloadCSV(csv, filename){
+ var a = document.createElement('a');
+ a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+ a.download = filename;
+ a.click();
+}
+
+function exportCurrent(){
+ var csv, filename;
+ if(currentReport === 'all'){
+  var rows = [['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
+  baseResults.forEach(function(r){ rows.push([r.page, r.num, r.status, r.rec?r.rec.customer:'', r.rec?r.rec.trade:'', r.rec?r.rec.zone:'', r.rec?r.rec.book:'', r.rec?r.rec.platform:'']); });
+  csv = makeCSV(rows); filename = 'qc_full_report.csv';
+ } else if(currentReport === 'notfound'){
+  var rows = [['Page','Number','Note']];
+  notFoundResults.forEach(function(r){ rows.push([r.page, r.num, 'Not in master dataset']); });
+  csv = makeCSV(rows); filename = 'qc_not_found.csv';
+ } else if(currentReport === 'mismatch'){
+  var rows = [['Page','Number','Ad Shows - Name','Ad Shows - Trade','DB Has - Customer','DB Has - Trade']];
+  mismatchResults.forEach(function(r){ rows.push([r.page, r.num, r.ad_name, r.ad_trade, r.db_name, r.db_trade]); });
+  csv = makeCSV(rows); filename = 'qc_mismatches.csv';
+ } else if(currentReport === 'dupenum'){
+  var rows = [['Number','Customer','Pages']];
+  dupeNumResults.forEach(function(r){ rows.push([r.num, r.customer, r.pages.join(', ')]); });
+  csv = makeCSV(rows); filename = 'qc_duplicate_numbers.csv';
+ } else if(currentReport === 'dupead'){
+  var rows = [['Customer','Trade','Pages and Numbers']];
+  dupeAdResults.forEach(function(r){ rows.push([r.customer, r.trade, r.entries.map(function(e){ return 'p.'+e.page+' ('+e.num+')'; }).join(', ')]); });
+  csv = makeCSV(rows); filename = 'qc_duplicate_ads.csv';
+ }
+ if(csv) downloadCSV(csv, filename);
+}
+
+function exportAll(){
+ // Full report
+ var rows = [['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
+ baseResults.forEach(function(r){ rows.push([r.page, r.num, r.status, r.rec?r.rec.customer:'', r.rec?r.rec.trade:'', r.rec?r.rec.zone:'', r.rec?r.rec.book:'', r.rec?r.rec.platform:'']); });
+ downloadCSV(makeCSV(rows), 'qc_full_report.csv');
+
+ setTimeout(function(){
+  // Not Found
+  var r2 = [['Page','Number','Note']];
+  notFoundResults.forEach(function(r){ r2.push([r.page, r.num, 'Not in master dataset']); });
+  downloadCSV(makeCSV(r2), 'qc_not_found.csv');
+ }, 300);
+
+ setTimeout(function(){
+  // Mismatches
+  var r3 = [['Page','Number','Ad Name','Ad Trade','DB Customer','DB Trade']];
+  mismatchResults.forEach(function(r){ r3.push([r.page, r.num, r.ad_name, r.ad_trade, r.db_name, r.db_trade]); });
+  downloadCSV(makeCSV(r3), 'qc_mismatches.csv');
+ }, 600);
+
+ setTimeout(function(){
+  // Dupe Numbers
+  var r4 = [['Number','Customer','Pages']];
+  dupeNumResults.forEach(function(r){ r4.push([r.num, r.customer, r.pages.join(', ')]); });
+  downloadCSV(makeCSV(r4), 'qc_duplicate_numbers.csv');
+ }, 900);
+
+ setTimeout(function(){
+  // Dupe Ads
+  var r5 = [['Customer','Trade','Pages and Numbers']];
+  dupeAdResults.forEach(function(r){ r5.push([r.customer, r.trade, r.entries.map(function(e){ return 'p.'+e.page+' ('+e.num+')'; }).join(', ')]); });
+  downloadCSV(makeCSV(r5), 'qc_duplicate_ads.csv');
+ }, 1200);
 }
 
 function resetQC(){
  document.getElementById('qc-results').classList.remove('show');
  uploadZone.style.display='block';
- pdfFile.value=''; qcResults=[];
-}
-
-function exportCSV(){
- var rows=[['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
- qcResults.forEach(function(r){ rows.push([r.page,r.num,r.status,r.customer,r.trade,r.zone,r.book,r.platform]); });
- var csv=rows.map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
- var a=document.createElement('a');
- a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
- a.download='trackstream_qc_report.csv';
- a.click();
+ pdfFile.value='';
+ baseResults=[]; notFoundResults=[]; mismatchResults=[]; dupeNumResults=[]; dupeAdResults=[];
 }
 
 function saveClaudeKey(){
@@ -489,6 +712,7 @@ if(!CLAUDE_KEY){
  });
 }
 
+// ── LOAD RECORDS ─────────────────────────────────────────────────────────────
 function processRecords(json){
  if(!json.records){
   setLookupStatus('Failed to load records','err');
@@ -522,7 +746,6 @@ function processRecords(json){
  setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
  setConn('ok',records.length.toLocaleString()+' records');
 }
-
 (function(){
  try {
   var script=document.createElement('script');
