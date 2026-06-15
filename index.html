@@ -23,82 +23,27 @@
  --sans: 'Syne', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
- font-family: var(--sans);
- background: var(--bg);
- color: var(--text);
- min-height: 100vh;
-}
-.shell {
- display: grid;
- grid-template-columns: 240px 1fr;
- min-height: 100vh;
-}
-.sidebar {
- background: var(--surface);
- border-right: 1px solid var(--border);
- display: flex;
- flex-direction: column;
- position: sticky;
- top: 0;
- height: 100vh;
-}
-.sidebar-brand {
- padding: 24px 20px 18px;
- border-bottom: 1px solid var(--border);
-}
-.brand-logo {
- width: 36px;
- height: 36px;
- background: var(--burgundy);
- border-radius: 8px;
- display: flex;
- align-items: center;
- justify-content: center;
- margin-bottom: 10px;
-}
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+.shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+.sidebar-brand { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+.brand-logo { width: 36px; height: 36px; background: var(--burgundy); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
 .brand-logo svg { width: 18px; height: 18px; fill: #fff; }
 .brand-name { font-size: 15px; font-weight: 700; color: var(--text); }
 .brand-version { font-size: 10px; font-family: var(--mono); color: var(--burgundy); margin-top: 2px; letter-spacing: 0.06em; }
-.sidebar-stats {
- padding: 16px 20px;
- border-bottom: 1px solid var(--border);
- display: flex;
- flex-direction: column;
- gap: 10px;
-}
+.sidebar-stats { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
 .stat-row { display: flex; justify-content: space-between; align-items: center; }
 .stat-name { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
 .stat-num { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--text); }
 .stat-num.loading { color: var(--text-dim); font-weight: 400; }
 .sidebar-nav { padding: 12px 10px; flex: 1; }
-.nav-item {
- display: flex;
- align-items: center;
- gap: 10px;
- padding: 10px 12px;
- border-radius: 8px;
- cursor: pointer;
- transition: background 0.15s;
- margin-bottom: 2px;
- font-size: 13px;
- font-weight: 600;
- color: var(--text-dim);
-}
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; font-size: 13px; font-weight: 600; color: var(--text-dim); }
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active { background: #FAD7D7; color: var(--burgundy); }
 .nav-icon { font-size: 15px; width: 20px; text-align: center; }
-.sidebar-footer {
- padding: 14px 20px;
- border-top: 1px solid var(--border);
-}
+.sidebar-footer { padding: 14px 20px; border-top: 1px solid var(--border); }
 .conn-status { display: flex; align-items: center; gap: 8px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
-.conn-dot {
- width: 7px; height: 7px;
- border-radius: 50%;
- background: var(--text-dim);
- flex-shrink: 0;
-}
+.conn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
 .conn-dot.ok { background: var(--green); }
 .conn-dot.err { background: var(--red); }
 .conn-dot.loading { background: var(--gold); animation: blink 1.2s ease-in-out infinite; }
@@ -110,68 +55,24 @@ body {
 .panel-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .panel-sub { font-size: 12px; color: var(--text-dim); }
 .search-box { display: flex; max-width: 520px; margin-bottom: 16px; }
-.search-input {
- flex: 1;
- background: var(--surface);
- border: 1px solid var(--border);
- border-right: none;
- border-radius: 10px 0 0 10px;
- padding: 13px 16px;
- font-family: var(--mono);
- font-size: 15px;
- color: var(--text);
- outline: none;
- transition: border-color 0.2s;
-}
+.search-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: 10px 0 0 10px; padding: 13px 16px; font-family: var(--mono); font-size: 15px; color: var(--text); outline: none; transition: border-color 0.2s; }
 .search-input::placeholder { color: #BBB; }
 .search-input:focus { border-color: var(--burgundy); }
-.search-btn {
- background: var(--burgundy);
- color: #fff;
- border: none;
- border-radius: 0 10px 10px 0;
- padding: 13px 22px;
- font-family: var(--sans);
- font-size: 11px;
- font-weight: 700;
- cursor: pointer;
- text-transform: uppercase;
- letter-spacing: 0.08em;
- transition: background 0.2s;
-}
+.search-btn { background: var(--burgundy); color: #fff; border: none; border-radius: 0 10px 10px 0; padding: 13px 22px; font-family: var(--sans); font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: background 0.2s; }
 .search-btn:hover { background: var(--burgundy-bright); }
 .search-btn:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
 .lookup-status { font-size: 11px; font-family: var(--mono); color: var(--text-dim); margin-bottom: 16px; min-height: 16px; }
 .lookup-status.ok { color: var(--green); }
 .lookup-status.err { color: var(--red); }
 .lookup-status.loading { color: var(--gold); }
-.result-card {
- background: var(--surface);
- border: 1px solid var(--border);
- border-radius: 12px;
- overflow: hidden;
- max-width: 520px;
- display: none;
-}
+.result-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 520px; display: none; }
 .result-card.show { display: block; }
-.result-card-head {
- background: var(--burgundy);
- padding: 14px 18px;
- display: flex;
- align-items: center;
- justify-content: space-between;
- flex-wrap: wrap;
- gap: 8px;
-}
+.result-card-head { background: var(--burgundy); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .result-status-label { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; }
 .result-status-label.ok { color: #A8E6B0; }
 .result-status-label.err { color: #F5A5A5; }
 .result-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.rbadge {
- font-size: 10px; font-family: var(--mono); font-weight: 500;
- padding: 3px 8px; border-radius: 4px;
- text-transform: uppercase; letter-spacing: 0.05em;
-}
+.rbadge { font-size: 10px; font-family: var(--mono); font-weight: 500; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
 .rb-cs { background: #D0E8F5; color: #1A5276; }
 .rb-cv { background: #D0F0E4; color: #145A32; }
 .rb-thig { background: #FAD7D7; color: #7B241C; }
@@ -185,53 +86,16 @@ body {
 .rf-val.mono { font-family: var(--mono); font-weight: 500; font-size: 13px; }
 .rf-val.na { color: var(--text-dim); font-weight: 400; }
 .rf-div { height: 1px; background: var(--border2); grid-column: 1/-1; }
-.upload-zone {
- border: 2px dashed var(--border);
- border-radius: 14px;
- padding: 44px 32px;
- text-align: center;
- cursor: pointer;
- transition: border-color 0.2s, background 0.2s;
- background: var(--surface);
- max-width: 560px;
- margin-bottom: 20px;
-}
+.upload-zone { border: 2px dashed var(--border); border-radius: 14px; padding: 44px 32px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: var(--surface); max-width: 560px; margin-bottom: 20px; }
 .upload-zone:hover, .upload-zone.drag { border-color: var(--burgundy); background: #FFF5F5; }
 .upload-zone-icon { font-size: 38px; margin-bottom: 12px; }
 .upload-zone-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .upload-zone-sub { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
-.upload-zone-pill {
- display: inline-block;
- margin-top: 12px;
- background: #FAD7D7;
- color: var(--burgundy);
- font-size: 10px;
- font-family: var(--mono);
- padding: 4px 10px;
- border-radius: 20px;
- text-transform: uppercase;
- letter-spacing: 0.07em;
-}
+.upload-zone-pill { display: inline-block; margin-top: 12px; background: #FAD7D7; color: var(--burgundy); font-size: 10px; font-family: var(--mono); padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.07em; }
 input[type=file] { display: none; }
-.scan-progress {
- display: none;
- background: var(--surface);
- border: 1px solid var(--border);
- border-radius: 12px;
- padding: 32px;
- max-width: 560px;
- text-align: center;
- margin-bottom: 20px;
-}
+.scan-progress { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; max-width: 560px; text-align: center; margin-bottom: 20px; }
 .scan-progress.show { display: block; }
-.scan-spinner {
- width: 36px; height: 36px;
- border: 3px solid var(--border);
- border-top-color: var(--burgundy);
- border-radius: 50%;
- animation: spin 0.8s linear infinite;
- margin: 0 auto 14px;
-}
+.scan-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--burgundy); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .scan-stage { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
 .scan-detail { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
@@ -245,232 +109,140 @@ input[type=file] { display: none; }
 .sc-val.red { color: var(--red); }
 .sc-label { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
 .report-switcher { display: flex; gap: 4px; margin-bottom: 14px; }
-.rsw-btn {
- padding: 7px 16px;
- border-radius: 7px;
- font-size: 11px;
- font-weight: 700;
- cursor: pointer;
- border: 1px solid var(--border);
- background: var(--surface2);
- color: var(--text-dim);
- font-family: var(--sans);
- text-transform: uppercase;
- letter-spacing: 0.05em;
- transition: all 0.15s;
-}
+.rsw-btn { padding: 7px 16px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.15s; }
 .rsw-btn:hover { color: var(--text); }
 .rsw-btn.active { background: var(--burgundy); color: #fff; border-color: var(--burgundy); }
 .report-view { display: none; }
 .report-view.active { display: block; }
-.table-wrap {
- background: var(--surface);
- border: 1px solid var(--border);
- border-radius: 10px;
- overflow: hidden;
- max-height: 460px;
- overflow-y: auto;
-}
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; max-height: 460px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
-thead th {
- background: var(--surface2);
- padding: 9px 12px;
- text-align: left;
- font-family: var(--mono);
- font-size: 10px;
- color: var(--text-dim);
- text-transform: uppercase;
- letter-spacing: 0.06em;
- border-bottom: 1px solid var(--border);
- position: sticky;
- top: 0;
-}
-tbody td {
- padding: 9px 12px;
- border-bottom: 1px solid var(--border2);
- font-family: var(--mono);
- font-size: 11px;
- color: var(--text);
- vertical-align: top;
-}
+thead th { background: var(--surface2); padding: 9px 12px; text-align: left; font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
+tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border2); font-family: var(--mono); font-size: 11px; color: var(--text); vertical-align: top; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--surface2); }
 tbody tr.flagrow td { background: #FFF0F0; }
 tbody tr.flagrow:hover td { background: #FFE5E5; }
+tbody tr.duperow td { background: #FFFBF0; }
+tbody tr.duperow:hover td { background: #FFF5D6; }
+tbody tr.multirow td { background: #F0F8FF; }
+tbody tr.multirow:hover td { background: #E8F4FD; }
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
+.pill-dupe { background: #FFF3CD; color: #856404; }
+.pill-multi { background: #E8F4FD; color: #1A5276; }
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
-.action-btn {
- padding: 10px 20px;
- border-radius: 8px;
- font-size: 11px;
- font-weight: 700;
- cursor: pointer;
- border: 1px solid var(--border);
- background: var(--surface2);
- color: var(--text);
- font-family: var(--sans);
- text-transform: uppercase;
- letter-spacing: 0.05em;
- transition: all 0.15s;
-}
+.action-btn { padding: 10px 20px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.15s; }
 .action-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
 .action-btn.primary { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
 .action-btn.primary:hover { background: var(--burgundy-bright); }
-#key-setup input {
- width: 100%;
- background: var(--surface2);
- border: 1px solid var(--border);
- border-radius: 6px;
- padding: 8px 10px;
- font-family: var(--mono);
- font-size: 11px;
- color: var(--text);
- outline: none;
- margin-bottom: 6px;
-}
-#key-setup button {
- width: 100%;
- background: var(--burgundy);
- color: #fff;
- border: none;
- border-radius: 6px;
- padding: 8px;
- font-family: var(--sans);
- font-size: 11px;
- font-weight: 700;
- cursor: pointer;
- text-transform: uppercase;
- letter-spacing: 0.05em;
-}
+#key-setup input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; color: var(--text); outline: none; margin-bottom: 6px; }
+#key-setup button { width: 100%; background: var(--burgundy); color: #fff; border: none; border-radius: 6px; padding: 8px; font-family: var(--sans); font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
 </style>
 </head>
 <body>
 <div class="shell">
  <aside class="sidebar">
- <div class="sidebar-brand">
- <div class="brand-logo">
- <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h2.5a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.23 1.03l-1.5 1.5a11 11 0 005.27 5.27l1.5-1.5a1 1 0 011.03-.23l3.6 1.2A1 1 0 0121 16.5V19a2 2 0 01-2 2h-1C8.16 21 3 15.84 3 9V8a2 2 0 010-.5V5z"/></svg>
- </div>
- <div class="brand-name">TrackStream</div>
- <div class="brand-version">V2.0 · THIG · LST · BAY</div>
- </div>
- <div class="sidebar-stats">
- <div class="stat-row">
- <span class="stat-name">Total Records</span>
- <span class="stat-num loading" id="s-total">—</span>
- </div>
- <div class="stat-row">
- <span class="stat-name">CallSource</span>
- <span class="stat-num loading" id="s-cs">—</span>
- </div>
- <div class="stat-row">
- <span class="stat-name">Convirza</span>
- <span class="stat-num loading" id="s-cv">—</span>
- </div>
- </div>
- <nav class="sidebar-nav">
- <div class="nav-item active" onclick="showPanel('lookup')" id="nav-lookup">
- <span class="nav-icon">🔍</span><span>Lookup</span>
- </div>
- <div class="nav-item" onclick="showPanel('qc')" id="nav-qc">
- <span class="nav-icon">📋</span><span>Booklet QC</span>
- </div>
- </nav>
- <div class="sidebar-footer">
- <div class="conn-status" style="margin-bottom:10px">
- <div class="conn-dot loading" id="conn-dot"></div>
- <span id="conn-label">Connecting...</span>
- </div>
- <div id="key-setup" style="display:none">
- <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
- <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." />
- <button onclick="saveClaudeKey()">Save Key</button>
- </div>
- </div>
+  <div class="sidebar-brand">
+   <div class="brand-logo">
+    <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h2.5a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.23 1.03l-1.5 1.5a11 11 0 005.27 5.27l1.5-1.5a1 1 0 011.03-.23l3.6 1.2A1 1 0 0121 16.5V19a2 2 0 01-2 2h-1C8.16 21 3 15.84 3 9V8a2 2 0 010-.5V5z"/></svg>
+   </div>
+   <div class="brand-name">TrackStream</div>
+   <div class="brand-version">V2.0 · THIG · LST · BAY</div>
+  </div>
+  <div class="sidebar-stats">
+   <div class="stat-row"><span class="stat-name">Total Records</span><span class="stat-num loading" id="s-total">—</span></div>
+   <div class="stat-row"><span class="stat-name">CallSource</span><span class="stat-num loading" id="s-cs">—</span></div>
+   <div class="stat-row"><span class="stat-name">Convirza</span><span class="stat-num loading" id="s-cv">—</span></div>
+  </div>
+  <nav class="sidebar-nav">
+   <div class="nav-item active" onclick="showPanel('lookup')" id="nav-lookup"><span class="nav-icon">🔍</span><span>Lookup</span></div>
+   <div class="nav-item" onclick="showPanel('qc')" id="nav-qc"><span class="nav-icon">📋</span><span>Booklet QC</span></div>
+  </nav>
+  <div class="sidebar-footer">
+   <div class="conn-status" style="margin-bottom:10px">
+    <div class="conn-dot loading" id="conn-dot"></div>
+    <span id="conn-label">Connecting...</span>
+   </div>
+   <div id="key-setup" style="display:none">
+    <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
+    <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." />
+    <button onclick="saveClaudeKey()">Save Key</button>
+   </div>
+  </div>
  </aside>
  <main class="main">
- <section class="panel active" id="panel-lookup">
- <div class="panel-header">
- <div class="panel-title">Number Lookup</div>
- <div class="panel-sub">Search across all books and platforms instantly</div>
- </div>
- <div class="search-box">
- <input type="text" class="search-input" id="inp" placeholder="Enter tracking number..." maxlength="20" />
- <button class="search-btn" id="btn" disabled>Lookup</button>
- </div>
- <div class="lookup-status loading" id="status">Loading records...</div>
- <div class="result-card" id="result">
- <div class="result-card-head">
- <span class="result-status-label ok" id="found-label">● MATCH FOUND</span>
- <div class="result-badges" id="badges"></div>
- </div>
- <div class="result-card-body" id="result-body"></div>
- </div>
- </section>
- <section class="panel" id="panel-qc">
- <div class="panel-header">
- <div class="panel-title">Booklet QC Scanner</div>
- <div class="panel-sub">Claude Vision reads every page — text and image layers</div>
- </div>
- <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-file').click()">
- <div class="upload-zone-icon">📄</div>
- <div class="upload-zone-title">Upload Booklet PDF</div>
- <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
- <div class="upload-zone-pill">Powered by Claude Vision</div>
- </div>
- <input type="file" id="pdf-file" accept=".pdf" />
- <div class="scan-progress" id="scan-progress">
- <div class="scan-spinner"></div>
- <div class="scan-stage" id="scan-stage">Uploading PDF...</div>
- <div class="scan-detail" id="scan-detail">Preparing file</div>
- </div>
- <div class="qc-results" id="qc-results">
- <div class="qc-scorecards">
- <div class="scorecard">
- <div class="sc-val blue" id="qc-total">0</div>
- <div class="sc-label">Numbers Found</div>
- </div>
- <div class="scorecard">
- <div class="sc-val green" id="qc-matched">0</div>
- <div class="sc-label">Matched</div>
- </div>
- <div class="scorecard">
- <div class="sc-val red" id="qc-flagged">0</div>
- <div class="sc-label">Not Found</div>
- </div>
- </div>
- <div class="report-switcher">
- <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
- <button class="rsw-btn" onclick="switchReport('flags')">✕ Not Found</button>
- </div>
- <div class="report-view active" id="report-all">
- <div class="table-wrap">
- <table>
- <thead><tr><th>Page</th><th>Number</th><th>Status</th><th>Customer</th><th>Trade</th><th>Zone</th><th>Book</th><th>Platform</th></tr></thead>
- <tbody id="tbody-all"></tbody>
- </table>
- </div>
- </div>
- <div class="report-view" id="report-flags">
- <div class="table-wrap">
- <table>
- <thead><tr><th>Page</th><th>Number</th><th>Note</th></tr></thead>
- <tbody id="tbody-flags"></tbody>
- </table>
- </div>
- </div>
- <div class="qc-actions">
- <button class="action-btn primary" onclick="exportCSV()">Export CSV</button>
- <button class="action-btn" onclick="resetQC()">Scan Another</button>
- </div>
- </div>
- </section>
+  <section class="panel active" id="panel-lookup">
+   <div class="panel-header">
+    <div class="panel-title">Number Lookup</div>
+    <div class="panel-sub">Search across all books and platforms instantly</div>
+   </div>
+   <div class="search-box">
+    <input type="text" class="search-input" id="inp" placeholder="Enter tracking number..." maxlength="20" />
+    <button class="search-btn" id="btn" disabled>Lookup</button>
+   </div>
+   <div class="lookup-status loading" id="status">Loading records...</div>
+   <div class="result-card" id="result">
+    <div class="result-card-head">
+     <span class="result-status-label ok" id="found-label">● MATCH FOUND</span>
+     <div class="result-badges" id="badges"></div>
+    </div>
+    <div class="result-card-body" id="result-body"></div>
+   </div>
+  </section>
+  <section class="panel" id="panel-qc">
+   <div class="panel-header">
+    <div class="panel-title">Booklet QC Scanner</div>
+    <div class="panel-sub">Claude Vision reads every page — text and image layers</div>
+   </div>
+   <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-file').click()">
+    <div class="upload-zone-icon">📄</div>
+    <div class="upload-zone-title">Upload Booklet PDF</div>
+    <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
+    <div class="upload-zone-pill">Powered by Claude Vision</div>
+   </div>
+   <input type="file" id="pdf-file" accept=".pdf" />
+   <div class="scan-progress" id="scan-progress">
+    <div class="scan-spinner"></div>
+    <div class="scan-stage" id="scan-stage">Uploading PDF...</div>
+    <div class="scan-detail" id="scan-detail">Preparing file</div>
+   </div>
+   <div class="qc-results" id="qc-results">
+    <div class="qc-scorecards">
+     <div class="scorecard"><div class="sc-val blue" id="qc-total">0</div><div class="sc-label">Numbers Found</div></div>
+     <div class="scorecard"><div class="sc-val green" id="qc-matched">0</div><div class="sc-label">Matched</div></div>
+     <div class="scorecard"><div class="sc-val red" id="qc-flagged">0</div><div class="sc-label">Review Required</div></div>
+    </div>
+    <div class="report-switcher">
+     <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
+     <button class="rsw-btn" onclick="switchReport('flags')">⚠ Flags Only</button>
+    </div>
+    <div class="report-view active" id="report-all">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Page</th><th>Number</th><th>Status</th><th>Customer</th><th>Trade</th><th>Zone</th><th>Book</th><th>Platform</th></tr></thead>
+       <tbody id="tbody-all"></tbody>
+      </table>
+     </div>
+    </div>
+    <div class="report-view" id="report-flags">
+     <div class="table-wrap">
+      <table>
+       <thead><tr><th>Page</th><th>Number</th><th>Note</th></tr></thead>
+       <tbody id="tbody-flags"></tbody>
+      </table>
+     </div>
+    </div>
+    <div class="qc-actions">
+     <button class="action-btn primary" onclick="exportCSV()">Export CSV</button>
+     <button class="action-btn" onclick="resetQC()">Scan Another</button>
+    </div>
+   </div>
+  </section>
  </main>
 </div>
 <script>
-var BACKEND = 'https://script.google.com/macros/s/AKfycbzzppYxkcMfmgv1roIyppfiXhY1sNAHy0VCP1k8UIkZW88QvPNLJTJwExrQ79VyIA0hIA/exec';
+var BACKEND = 'https://script.google.com/macros/s/AKfycbyHkfJNsnFVNAkYLBOnsF4hNUCQ2l0DtiUS8eRBVdp7V5K1cwlIxKFh2xoWgCUSDPnkRw/exec';
 var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
 var records = [], ready = false, qcResults = [];
 
@@ -485,7 +257,6 @@ function showPanel(p){
  document.getElementById('panel-'+p).classList.add('active');
  document.getElementById('nav-'+p).classList.add('active');
 }
-
 function switchReport(t){
  document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
  document.getElementById('report-all').classList.toggle('active', t==='all');
@@ -520,20 +291,18 @@ function showResult(r){
  bodyEl.appendChild(rfield('Target Number',r.target_number,true));
  bodyEl.appendChild(rfield('Source',r.source,true));
  if(plat==='CONVIRZA'){
- bodyEl.appendChild(rdiv());
- bodyEl.appendChild(rfield('Convirza TN ID',r.convirza_tn_id,true));
- bodyEl.appendChild(rfield('TN Name',r.convirza_tn_name,false));
- bodyEl.appendChild(rfield('Campaign',r.convirza_campaign,false));
- bodyEl.appendChild(rfield('Status',r.convirza_status,false));
+  bodyEl.appendChild(rdiv());
+  bodyEl.appendChild(rfield('Convirza TN ID',r.convirza_tn_id,true));
+  bodyEl.appendChild(rfield('TN Name',r.convirza_tn_name,false));
+  bodyEl.appendChild(rfield('Campaign',r.convirza_campaign,false));
+  bodyEl.appendChild(rfield('Status',r.convirza_status,false));
  }
 }
-
 function showNotFound(num){
  resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
  foundLabel.className='result-status-label err'; foundLabel.textContent='✕ NOT FOUND';
  bodyEl.appendChild(rfield('Searched',num,true,true));
 }
-
 function doLookup(){
  if(!ready) return;
  var raw=inp.value.trim(); if(!raw) return;
@@ -543,7 +312,6 @@ function doLookup(){
  if(m){ setLookupStatus('Match found — '+d,'ok'); showResult(m); }
  else { setLookupStatus('No record found for '+d,'err'); showNotFound(d); }
 }
-
 inp.addEventListener('keydown',function(e){ if(e.key==='Enter') doLookup(); });
 btn.addEventListener('click',doLookup);
 inp.addEventListener('input',function(){ if(ready){ resultEl.classList.remove('show'); setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok'); }});
@@ -565,50 +333,44 @@ async function startScan(file){
  document.getElementById('scan-progress').classList.add('show');
  setScanState('Reading PDF...', (file.size/1024/1024).toFixed(1)+' MB');
  try {
- var base64 = await new Promise(function(resolve, reject){
- var reader = new FileReader();
- reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
- reader.onerror = reject;
- reader.readAsDataURL(file);
- });
- setScanState('Claude is reading the booklet...','Analyzing all pages — this may take 30–60 seconds');
- var response = await fetch('https://api.anthropic.com/v1/messages', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json',
- 'x-api-key': CLAUDE_KEY,
- 'anthropic-version': '2023-06-01',
- 'anthropic-dangerous-direct-browser-access': 'true'
- },
- body: JSON.stringify({
- model: 'claude-haiku-4-5-20251001',
- max_tokens: 8096,
- messages: [{
- role: 'user',
- content: [
- {
- type: 'document',
- source: { type: 'base64', media_type: 'application/pdf', data: base64 }
- },
- {
- type: 'text',
-                 text: 'This is an advertising booklet PDF. Find every phone number on every page. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8185556789"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages.'
- }
- ]
- }]
- })
- });
- var json = await response.json();
- if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
- var text = json.content && json.content[0] ? json.content[0].text : '[]';
- text = text.replace(/```json|```/g,'').trim();
- var parsed = JSON.parse(text);
- document.getElementById('scan-progress').classList.remove('show');
- buildReport(parsed);
+  var base64 = await new Promise(function(resolve, reject){
+   var reader = new FileReader();
+   reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
+   reader.onerror = reject;
+   reader.readAsDataURL(file);
+  });
+  setScanState('Claude is reading the booklet...','Analyzing all pages — this may take 30–60 seconds');
+  var response = await fetch('https://api.anthropic.com/v1/messages', {
+   method: 'POST',
+   headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': CLAUDE_KEY,
+    'anthropic-version': '2023-06-01',
+    'anthropic-dangerous-direct-browser-access': 'true'
+   },
+   body: JSON.stringify({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 8096,
+    messages: [{
+     role: 'user',
+     content: [
+      { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
+      { type: 'text', text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}]. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, do not include any explanation.' }
+     ]
+    }]
+   })
+  });
+  var json = await response.json();
+  if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
+  var text = json.content && json.content[0] ? json.content[0].text : '[]';
+  text = text.replace(/```json|```/g,'').trim();
+  var parsed = JSON.parse(text);
+  document.getElementById('scan-progress').classList.remove('show');
+  buildReport(parsed);
  } catch(err){
- document.getElementById('scan-progress').classList.remove('show');
- uploadZone.style.display='block';
- alert('Scan failed: '+err.message);
+  document.getElementById('scan-progress').classList.remove('show');
+  uploadZone.style.display='block';
+  alert('Scan failed: '+err.message);
  }
 }
 
@@ -619,60 +381,80 @@ function buildReport(data){
  var tbAll = document.getElementById('tbody-all');
  var tbFlags = document.getElementById('tbody-flags');
  tbAll.innerHTML=''; tbFlags.innerHTML='';
- var matched=0, notfound=0;
-
+ var matched=0, flagged=0;
  data.sort(function(a,b){ return a.page-b.page; });
 
  data.forEach(function(item){
- var num = String(item.number).replace(/\D/g,'');
- var pg = item.page;
- if(num.length !== 10) return;
+  var num = String(item.number).replace(/\D/g,'');
+  var pg = item.page;
+  if(num.length !== 10) return;
+  var rec = records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
+  var isMatch = !!rec;
 
- var rec = records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
- var isMatch = !!rec;
+  // Mismatch: TN found in DB but ad name/trade don't match
+  var isMismatch = false;
+  if(isMatch && rec){
+   var adName = (item.ad_name||'').toUpperCase().trim();
+   var adTrade = (item.ad_trade||'').toUpperCase().trim();
+   if(adName && adTrade){
+    var dbName = (rec.customer||'').toUpperCase().trim();
+    var dbTrade = (rec.trade||'').toUpperCase().trim();
+    var dbWords = dbName.split(/\s+/).filter(function(w){ return w.length>2; });
+    var adWords = adName.split(/\s+/).filter(function(w){ return w.length>2; });
+    var nameMatch = dbWords.some(function(w){ return adName.indexOf(w)>-1; })
+     || adWords.some(function(w){ return dbName.indexOf(w)>-1; })
+     || adName.indexOf(dbName)>-1 || dbName.indexOf(adName)>-1;
+    var tradeMatch = dbTrade.indexOf(adTrade)>-1 || adTrade.indexOf(dbTrade)>-1
+     || adTrade.split(/\s+/).some(function(w){ return w.length>2&&dbTrade.indexOf(w)>-1; })
+     || dbTrade.split(/\s+/).some(function(w){ return w.length>2&&adTrade.indexOf(w)>-1; });
+    if(!nameMatch && !tradeMatch) isMismatch = true;
+   }
+  }
 
- if(isMatch) matched++; else notfound++;
+  if(isMatch && !isMismatch) matched++; else flagged++;
 
- qcResults.push({
- page: pg, num: num,
- status: isMatch ? 'MATCH' : 'NOT FOUND',
- customer: rec ? rec.customer : '',
- trade: rec ? rec.trade : '',
- zone: rec ? rec.zone : '',
- book: rec ? rec.book : '',
- platform: rec ? rec.platform : ''
+  var status = !isMatch ? 'NOT FOUND' : isMismatch ? 'MISMATCH' : 'MATCH';
+
+  qcResults.push({
+   page:pg, num:num, status:status,
+   customer: rec?rec.customer:'',
+   trade: rec?rec.trade:'',
+   zone: rec?rec.zone:'',
+   book: rec?rec.book:'',
+   platform: rec?rec.platform:''
+  });
+
+  var tr = document.createElement('tr');
+  if(!isMatch || isMismatch) tr.className = 'flagrow';
+  var pill = !isMatch
+   ? '<span class="pill pill-miss">✕ Not Found</span>'
+   : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
+   : '<span class="pill pill-match">✓ Match</span>';
+  tr.innerHTML = '<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+pill+'</td>'
+   +'<td>'+(rec?rec.customer:'—')+'</td>'
+   +'<td>'+(rec?rec.trade:'—')+'</td>'
+   +'<td>'+(rec?rec.zone:'—')+'</td>'
+   +'<td>'+(rec?rec.book:'—')+'</td>'
+   +'<td>'+(rec?rec.platform:'—')+'</td>';
+  tbAll.appendChild(tr);
+
+  if(!isMatch){
+   var tr2 = document.createElement('tr'); tr2.className='flagrow';
+   tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Not in master dataset — review required</td>';
+   tbFlags.appendChild(tr2);
+  } else if(isMismatch){
+   var trM = document.createElement('tr'); trM.className='flagrow';
+   trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Ad shows: "'+(item.ad_name||'?')+'" / '+(item.ad_trade||'?')+' — DB has: "'+(rec?rec.customer:'?')+'" / '+(rec?rec.trade:'?')+'</td>';
+   tbFlags.appendChild(trM);
+  }
  });
 
- // Full report row
- var tr = document.createElement('tr');
- if(!isMatch) tr.className = 'flagrow';
- var pill = isMatch
- ? '<span class="pill pill-match">✓ Match</span>'
- : '<span class="pill pill-miss">✕ Not Found</span>';
- tr.innerHTML = '<td>'+pg+'</td>'
- +'<td>'+fmtPhone(num)+'</td>'
- +'<td>'+pill+'</td>'
- +'<td>'+(rec ? rec.customer : '—')+'</td>'
- +'<td>'+(rec ? rec.trade : '—')+'</td>'
- +'<td>'+(rec ? rec.zone : '—')+'</td>'
- +'<td>'+(rec ? rec.book : '—')+'</td>'
- +'<td>'+(rec ? rec.platform : '—')+'</td>';
- tbAll.appendChild(tr);
-
- // Not Found tab
- if(!isMatch){
- var tr2 = document.createElement('tr'); tr2.className='flagrow';
- tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Not in master dataset — review required</td>';
- tbFlags.appendChild(tr2);
- }
- });
-
- document.getElementById('qc-total').textContent = matched + notfound;
+ document.getElementById('qc-total').textContent = matched + flagged;
  document.getElementById('qc-matched').textContent = matched;
- document.getElementById('qc-flagged').textContent = notfound;
+ document.getElementById('qc-flagged').textContent = flagged;
 
  if(tbFlags.children.length === 0){
- tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ All numbers matched</td></tr>';
+  tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ No flags — all numbers matched</td></tr>';
  }
  document.getElementById('qc-results').classList.add('show');
 }
@@ -701,35 +483,34 @@ function saveClaudeKey(){
  document.getElementById('key-setup').style.display='none';
  alert('Key saved. You can now use the Booklet QC scanner.');
 }
-
 if(!CLAUDE_KEY){
  window.addEventListener('DOMContentLoaded', function(){
- document.getElementById('key-setup').style.display='block';
+  document.getElementById('key-setup').style.display='block';
  });
 }
 
 function processRecords(json){
  if(!json.records){
- setLookupStatus('Failed to load records','err');
- setConn('err','Connection failed');
- ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
- return;
+  setLookupStatus('Failed to load records','err');
+  setConn('err','Connection failed');
+  ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+  return;
  }
  records=json.records.map(function(r){
- return {
- tracking_number: r.tn||r.tracking_number||'',
- platform: r.platform||'',
- book: r.book||'',
- customer: r.customer||'',
- trade: r.trade||'',
- zone: r.zone||'',
- target_number: r.target||r.target_number||'',
- source: r.source||'',
- convirza_tn_id: r.conv_id||r.convirza_tn_id||'',
- convirza_tn_name: r.conv_name||r.convirza_tn_name||'',
- convirza_campaign: r.conv_campaign||r.convirza_campaign||'',
- convirza_status: r.conv_status||r.convirza_status||''
- };
+  return {
+   tracking_number: r.tn||r.tracking_number||'',
+   platform: r.platform||'',
+   book: r.book||'',
+   customer: r.customer||'',
+   trade: r.trade||'',
+   zone: r.zone||'',
+   target_number: r.target||r.target_number||'',
+   source: r.source||'',
+   convirza_tn_id: r.conv_id||r.convirza_tn_id||'',
+   convirza_tn_name: r.conv_name||r.convirza_tn_name||'',
+   convirza_campaign: r.conv_campaign||r.convirza_campaign||'',
+   convirza_status: r.conv_status||r.convirza_status||''
+  };
  });
  ready=true;
  var cs=records.filter(function(r){ return (r.platform||'').toUpperCase()!=='CONVIRZA'; }).length;
@@ -744,18 +525,18 @@ function processRecords(json){
 
 (function(){
  try {
- var script=document.createElement('script');
- script.src=BACKEND+'?action=getAllRecords&callback=processRecords';
- script.onerror=function(){
- setLookupStatus('Failed to load records','err');
- setConn('err','Connection failed');
- ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
- };
- document.head.appendChild(script);
+  var script=document.createElement('script');
+  script.src=BACKEND+'?action=getAllRecords&callback=processRecords';
+  script.onerror=function(){
+   setLookupStatus('Failed to load records','err');
+   setConn('err','Connection failed');
+   ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+  };
+  document.head.appendChild(script);
  } catch(e){
- setLookupStatus('Failed to load records','err');
- setConn('err','Connection failed');
- ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+  setLookupStatus('Failed to load records','err');
+  setConn('err','Connection failed');
+  ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
  }
 })();
 </script>
