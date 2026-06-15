@@ -417,7 +417,7 @@ async function startScan(file){
      role: 'user',
      content: [
       { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
-      { type: 'text', text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Also identify any pages that appear blank or contain no ad content at all. Return ONLY a valid JSON object with two keys, nothing else: {"ads":[{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}],"blank_pages":[5,18]}. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, blank_pages is an array of page numbers that had no ad content, do not include any explanation.' }
+      { type: 'text', text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. Page 1 is always the cover page — do NOT include it in blank_pages. For each ad found, extract: the phone number, the page number, the business name shown in the ad (use the primary business/company name exactly as it appears, consistently — if the same business appears on multiple pages use the exact same name each time), and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Also identify any pages (other than page 1) that appear blank or contain no ad content at all. Return ONLY a valid JSON object with two keys, nothing else: {"ads":[{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}],"blank_pages":[5,18]}. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, blank_pages is an array of page numbers that had no ad content (never include page 1), do not include any explanation.' }
      ]
     }]
    })
@@ -509,13 +509,22 @@ function checkDupeNumbers(){
 }
 
 // Check 4: Duplicate ads -- same business name + trade on more than one page
+// Normalize a business name for comparison: uppercase, strip common suffixes/punctuation, collapse spaces
+function normAdName(name){
+ return (name||'').toUpperCase()
+  .replace(/\b(INC|LLC|LTD|CO|CORP|DBA|THE|&|AND)\b/g,'')
+  .replace(/[^A-Z0-9]/g,' ')
+  .replace(/\s+/g,' ')
+  .trim();
+}
+
 // Runs on ALL rows (MATCH and NOT FOUND) using raw Claude Vision ad_name/ad_trade
 // so a dupe is caught even when one of the numbers is not in the dataset
 function checkDupeAds(){
  dupeAdResults = [];
  var adMap = {};
  baseResults.forEach(function(r){
-  var rawName = (r.ad_name||'').toUpperCase().trim();
+  var rawName = normAdName(r.ad_name);
   var rawTrade = (r.ad_trade||'').toUpperCase().trim();
   if(!rawName || !rawTrade) return;
   var key = rawName + '|' + rawTrade;
@@ -531,6 +540,7 @@ function checkDupeAds(){
 }
 
 // Check 5: Blank pages — pages Claude flagged as having no ad content
+// Page 1 is always the cover page — kept in list for display but not counted as a flag
 function checkBlankPages(blankData){
  blankPageResults = (blankData || []).map(function(p){ return { page: p }; });
 }
@@ -554,7 +564,7 @@ function renderAll(){
  var matched = baseResults.filter(function(r){ return r.status==='MATCH'; }).length;
  var notfound = notFoundResults.length;
  var flags = mismatchResults.length + dupeNumResults.length + dupeAdResults.length;
- var blanks = blankPageResults.length;
+ var blanks = blankPageResults.filter(function(r){ return r.page !== 1; }).length;
  document.getElementById('qc-total').textContent = baseResults.length;
  document.getElementById('qc-matched').textContent = matched;
  document.getElementById('qc-notfound').textContent = notfound;
@@ -653,8 +663,13 @@ function renderAll(){
   tbBL.innerHTML = '<tr><td colspan="2" class="empty-state">✓ No blank pages detected</td></tr>';
  } else {
   blankPageResults.forEach(function(r){
-   var tr = document.createElement('tr'); tr.className='flagrow';
-   tr.innerHTML = '<td>'+r.page+'</td><td>No ad content detected on this page</td>';
+   var tr = document.createElement('tr');
+   var isCover = (r.page === 1);
+   tr.className = isCover ? '' : 'flagrow';
+   var note = isCover
+    ? 'Cover page — not an ad page (expected)'
+    : 'No ad content detected on this page';
+   tr.innerHTML = '<td>'+r.page+'</td><td>'+note+'</td>';
    tbBL.appendChild(tr);
   });
  }
@@ -697,8 +712,7 @@ function exportCurrent(){
   csv = makeCSV(rows); filename = 'qc_duplicate_ads.csv';
  } else if(currentReport === 'blank'){
   var rows = [['Page','Note']];
-  blankPageResults.forEach(function(r){ rows.push([r.page, 'No ad content detected']); });
-  csv = makeCSV(rows); filename = 'qc_blank_pages.csv';
+  blankPageResults.forEach(function(r){ rows.push([r.page, r.page===1?'Cover page — not an ad page (expected)':'No ad content detected']); });
  }
  if(csv) downloadCSV(csv, filename);
 }
@@ -740,7 +754,7 @@ function exportAll(){
  setTimeout(function(){
   // Blank Pages
   var r6 = [['Page','Note']];
-  blankPageResults.forEach(function(r){ r6.push([r.page, 'No ad content detected']); });
+  blankPageResults.forEach(function(r){ r6.push([r.page, r.page===1?'Cover page — not an ad page (expected)':'No ad content detected']); });
   downloadCSV(makeCSV(r6), 'qc_blank_pages.csv');
  }, 1500);
 }
