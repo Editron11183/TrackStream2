@@ -508,21 +508,25 @@ function checkDupeNumbers(){
  });
 }
 
-// Check 4: Duplicate ads — same customer + same trade on more than one page with different numbers
+// Check 4: Duplicate ads -- same business name + trade on more than one page
+// Runs on ALL rows (MATCH and NOT FOUND) using raw Claude Vision ad_name/ad_trade
+// so a dupe is caught even when one of the numbers is not in the dataset
 function checkDupeAds(){
  dupeAdResults = [];
  var adMap = {};
  baseResults.forEach(function(r){
-  if(r.status !== 'MATCH' || !r.rec) return;
-  var key = (r.rec.customer||'').toUpperCase().trim() + '|' + (r.rec.trade||'').toUpperCase().trim();
-  if(!adMap[key]) adMap[key] = { customer: r.rec.customer, trade: r.rec.trade, entries: [] };
+  var rawName = (r.ad_name||'').toUpperCase().trim();
+  var rawTrade = (r.ad_trade||'').toUpperCase().trim();
+  if(!rawName || !rawTrade) return;
+  var key = rawName + '|' + rawTrade;
+  var displayName = (r.rec && r.rec.customer) ? r.rec.customer : r.ad_name;
+  var displayTrade = (r.rec && r.rec.trade) ? r.rec.trade : r.ad_trade;
+  if(!adMap[key]) adMap[key] = { customer: displayName, trade: displayTrade, entries: [] };
   var exists = adMap[key].entries.filter(function(e){ return e.page===r.page && e.num===r.num; }).length > 0;
-  if(!exists) adMap[key].entries.push({ page: r.page, num: r.num });
+  if(!exists) adMap[key].entries.push({ page: r.page, num: r.num, status: r.status });
  });
  Object.keys(adMap).forEach(function(key){
-  if(adMap[key].entries.length > 1){
-   dupeAdResults.push(adMap[key]);
-  }
+  if(adMap[key].entries.length > 1) dupeAdResults.push(adMap[key]);
  });
 }
 
@@ -565,8 +569,9 @@ function renderAll(){
  baseResults.forEach(function(r){
   var isMismatch = mismatchResults.filter(function(m){ return m.num===r.num && m.page===r.page; }).length > 0;
   var isDupeNum = dupeNumResults.filter(function(d){ return d.num===r.num; }).length > 0;
-  var isDupeAd = r.rec && dupeAdResults.filter(function(d){
-   return d.customer===r.rec.customer && d.trade===r.rec.trade;
+  var rawAdKey = (r.ad_name||'').toUpperCase().trim() + '|' + (r.ad_trade||'').toUpperCase().trim();
+  var isDupeAd = rawAdKey.length > 1 && dupeAdResults.filter(function(d){
+   return ((d.customer||'').toUpperCase().trim()+'|'+(d.trade||'').toUpperCase().trim()) === rawAdKey;
   }).length > 0;
   var tr = document.createElement('tr');
   if(r.status==='NOT FOUND' || isMismatch) tr.className='flagrow';
@@ -635,7 +640,7 @@ function renderAll(){
  } else {
   dupeAdResults.forEach(function(r){
    var tr = document.createElement('tr'); tr.className='duperow';
-   var detail = r.entries.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
+   var detail = r.entries.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+(e.status==='NOT FOUND'?' ⚠NF':'')+')'; }).join(', ');
    tr.innerHTML = '<td>'+r.customer+'</td><td>'+r.trade+'</td><td>'+detail+'</td>';
    tbDA.appendChild(tr);
   });
