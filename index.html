@@ -592,7 +592,7 @@ async function startScan(file){
  },
  {
  type: 'text',
- text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found on each page, extract ONLY the phone number and the page number it appears on. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8185556789"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages or ads, do not include any explanation.'
+                 text: 'This is an advertising booklet PDF. Find every phone number on every page. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8185556789"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages.'
  }
  ]
  }]
