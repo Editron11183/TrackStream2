@@ -6,213 +6,178 @@
 <title>TrackStream 2.0</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap');
-
 :root {
-  --bg: #F2EDE8;
-  --surface: #FFFFFF;
-  --surface2: #F9F6F3;
-  --border: #DDD5CC;
-  --border2: #E8E2DA;
-  --burgundy: #6B1E2E;
-  --burgundy-bright: #8B2840;
-  --text: #1C1C1E;
-  --text-dim: #888;
-  --green: #2E7D3A;
-  --red: #C0392B;
-  --gold: #B8860B;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'Syne', sans-serif;
+ --bg: #F2EDE8;
+ --surface: #FFFFFF;
+ --surface2: #F9F6F3;
+ --border: #DDD5CC;
+ --border2: #E8E2DA;
+ --burgundy: #6B1E2E;
+ --burgundy-bright: #8B2840;
+ --text: #1C1C1E;
+ --text-dim: #888;
+ --green: #2E7D3A;
+ --red: #C0392B;
+ --gold: #B8860B;
+ --mono: 'IBM Plex Mono', monospace;
+ --sans: 'Syne', sans-serif;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+ font-family: var(--sans);
+ background: var(--bg);
+ color: var(--text);
+ min-height: 100vh;
 }
-
 .shell {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 100vh;
+ display: grid;
+ grid-template-columns: 240px 1fr;
+ min-height: 100vh;
 }
-
 .sidebar {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+ background: var(--surface);
+ border-right: 1px solid var(--border);
+ display: flex;
+ flex-direction: column;
+ position: sticky;
+ top: 0;
+ height: 100vh;
 }
-
 .sidebar-brand {
-  padding: 24px 20px 18px;
-  border-bottom: 1px solid var(--border);
+ padding: 24px 20px 18px;
+ border-bottom: 1px solid var(--border);
 }
-
 .brand-logo {
-  width: 36px;
-  height: 36px;
-  background: var(--burgundy);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
+ width: 36px;
+ height: 36px;
+ background: var(--burgundy);
+ border-radius: 8px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 10px;
 }
-
 .brand-logo svg { width: 18px; height: 18px; fill: #fff; }
-
 .brand-name { font-size: 15px; font-weight: 700; color: var(--text); }
 .brand-version { font-size: 10px; font-family: var(--mono); color: var(--burgundy); margin-top: 2px; letter-spacing: 0.06em; }
-
 .sidebar-stats {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+ padding: 16px 20px;
+ border-bottom: 1px solid var(--border);
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
 }
-
 .stat-row { display: flex; justify-content: space-between; align-items: center; }
 .stat-name { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
 .stat-num { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--text); }
 .stat-num.loading { color: var(--text-dim); font-weight: 400; }
-
 .sidebar-nav { padding: 12px 10px; flex: 1; }
-
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
-  margin-bottom: 2px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-dim);
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 12px;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: background 0.15s;
+ margin-bottom: 2px;
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--text-dim);
 }
-
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active { background: #FAD7D7; color: var(--burgundy); }
 .nav-icon { font-size: 15px; width: 20px; text-align: center; }
-
 .sidebar-footer {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
+ padding: 14px 20px;
+ border-top: 1px solid var(--border);
 }
-
 .conn-status { display: flex; align-items: center; gap: 8px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
-
 .conn-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--text-dim);
-  flex-shrink: 0;
+ width: 7px; height: 7px;
+ border-radius: 50%;
+ background: var(--text-dim);
+ flex-shrink: 0;
 }
-
 .conn-dot.ok { background: var(--green); }
 .conn-dot.err { background: var(--red); }
 .conn-dot.loading { background: var(--gold); animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
 .main { display: flex; flex-direction: column; min-height: 100vh; }
 .panel { display: none; flex: 1; padding: 32px 36px; }
 .panel.active { display: flex; flex-direction: column; }
-
 .panel-header { margin-bottom: 24px; }
 .panel-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .panel-sub { font-size: 12px; color: var(--text-dim); }
-
 .search-box { display: flex; max-width: 520px; margin-bottom: 16px; }
-
 .search-input {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-right: none;
-  border-radius: 10px 0 0 10px;
-  padding: 13px 16px;
-  font-family: var(--mono);
-  font-size: 15px;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.2s;
+ flex: 1;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-right: none;
+ border-radius: 10px 0 0 10px;
+ padding: 13px 16px;
+ font-family: var(--mono);
+ font-size: 15px;
+ color: var(--text);
+ outline: none;
+ transition: border-color 0.2s;
 }
-
 .search-input::placeholder { color: #BBB; }
 .search-input:focus { border-color: var(--burgundy); }
-
 .search-btn {
-  background: var(--burgundy);
-  color: #fff;
-  border: none;
-  border-radius: 0 10px 10px 0;
-  padding: 13px 22px;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  transition: background 0.2s;
+ background: var(--burgundy);
+ color: #fff;
+ border: none;
+ border-radius: 0 10px 10px 0;
+ padding: 13px 22px;
+ font-family: var(--sans);
+ font-size: 11px;
+ font-weight: 700;
+ cursor: pointer;
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+ transition: background 0.2s;
 }
-
 .search-btn:hover { background: var(--burgundy-bright); }
 .search-btn:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
-
 .lookup-status { font-size: 11px; font-family: var(--mono); color: var(--text-dim); margin-bottom: 16px; min-height: 16px; }
 .lookup-status.ok { color: var(--green); }
 .lookup-status.err { color: var(--red); }
 .lookup-status.loading { color: var(--gold); }
-
 .result-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  max-width: 520px;
-  display: none;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 12px;
+ overflow: hidden;
+ max-width: 520px;
+ display: none;
 }
-
 .result-card.show { display: block; }
-
 .result-card-head {
-  background: var(--burgundy);
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
+ background: var(--burgundy);
+ padding: 14px 18px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ flex-wrap: wrap;
+ gap: 8px;
 }
-
 .result-status-label { font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; }
 .result-status-label.ok { color: #A8E6B0; }
 .result-status-label.err { color: #F5A5A5; }
-
 .result-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-
 .rbadge {
-  font-size: 10px; font-family: var(--mono); font-weight: 500;
-  padding: 3px 8px; border-radius: 4px;
-  text-transform: uppercase; letter-spacing: 0.05em;
+ font-size: 10px; font-family: var(--mono); font-weight: 500;
+ padding: 3px 8px; border-radius: 4px;
+ text-transform: uppercase; letter-spacing: 0.05em;
 }
-
 .rb-cs { background: #D0E8F5; color: #1A5276; }
 .rb-cv { background: #D0F0E4; color: #145A32; }
 .rb-thig { background: #FAD7D7; color: #7B241C; }
 .rb-lst { background: #E8D5F5; color: #4A235A; }
 .rb-bay { background: #D5E8FA; color: #1A3D5C; }
-
 .result-card-body { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
 .rf { display: flex; flex-direction: column; gap: 3px; }
 .rf.full { grid-column: 1/-1; }
 .rf-label { font-size: 10px; font-family: var(--mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.07em; }
@@ -220,142 +185,120 @@ body {
 .rf-val.mono { font-family: var(--mono); font-weight: 500; font-size: 13px; }
 .rf-val.na { color: var(--text-dim); font-weight: 400; }
 .rf-div { height: 1px; background: var(--border2); grid-column: 1/-1; }
-
 .upload-zone {
-  border: 2px dashed var(--border);
-  border-radius: 14px;
-  padding: 44px 32px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  background: var(--surface);
-  max-width: 560px;
-  margin-bottom: 20px;
+ border: 2px dashed var(--border);
+ border-radius: 14px;
+ padding: 44px 32px;
+ text-align: center;
+ cursor: pointer;
+ transition: border-color 0.2s, background 0.2s;
+ background: var(--surface);
+ max-width: 560px;
+ margin-bottom: 20px;
 }
-
 .upload-zone:hover, .upload-zone.drag { border-color: var(--burgundy); background: #FFF5F5; }
 .upload-zone-icon { font-size: 38px; margin-bottom: 12px; }
 .upload-zone-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .upload-zone-sub { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
-
 .upload-zone-pill {
-  display: inline-block;
-  margin-top: 12px;
-  background: #FAD7D7;
-  color: var(--burgundy);
-  font-size: 10px;
-  font-family: var(--mono);
-  padding: 4px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
+ display: inline-block;
+ margin-top: 12px;
+ background: #FAD7D7;
+ color: var(--burgundy);
+ font-size: 10px;
+ font-family: var(--mono);
+ padding: 4px 10px;
+ border-radius: 20px;
+ text-transform: uppercase;
+ letter-spacing: 0.07em;
 }
-
 input[type=file] { display: none; }
-
 .scan-progress {
-  display: none;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px;
-  max-width: 560px;
-  text-align: center;
-  margin-bottom: 20px;
+ display: none;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 12px;
+ padding: 32px;
+ max-width: 560px;
+ text-align: center;
+ margin-bottom: 20px;
 }
-
 .scan-progress.show { display: block; }
-
 .scan-spinner {
-  width: 36px; height: 36px;
-  border: 3px solid var(--border);
-  border-top-color: var(--burgundy);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 14px;
+ width: 36px; height: 36px;
+ border: 3px solid var(--border);
+ border-top-color: var(--burgundy);
+ border-radius: 50%;
+ animation: spin 0.8s linear infinite;
+ margin: 0 auto 14px;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .scan-stage { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
 .scan-detail { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
-
 .qc-results { display: none; max-width: 860px; }
 .qc-results.show { display: block; }
-
 .qc-scorecards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-
 .scorecard { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; }
 .sc-val { font-size: 26px; font-weight: 700; font-family: var(--mono); margin-bottom: 4px; }
 .sc-val.blue { color: #1A5276; }
 .sc-val.green { color: var(--green); }
 .sc-val.red { color: var(--red); }
 .sc-label { font-size: 10px; color: var(--text-dim); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
-
 .report-switcher { display: flex; gap: 4px; margin-bottom: 14px; }
-
 .rsw-btn {
-  padding: 7px 16px;
-  border-radius: 7px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--text-dim);
-  font-family: var(--sans);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.15s;
+ padding: 7px 16px;
+ border-radius: 7px;
+ font-size: 11px;
+ font-weight: 700;
+ cursor: pointer;
+ border: 1px solid var(--border);
+ background: var(--surface2);
+ color: var(--text-dim);
+ font-family: var(--sans);
+ text-transform: uppercase;
+ letter-spacing: 0.05em;
+ transition: all 0.15s;
 }
-
 .rsw-btn:hover { color: var(--text); }
 .rsw-btn.active { background: var(--burgundy); color: #fff; border-color: var(--burgundy); }
-
 .report-view { display: none; }
 .report-view.active { display: block; }
-
 .table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  max-height: 460px;
-  overflow-y: auto;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 10px;
+ overflow: hidden;
+ max-height: 460px;
+ overflow-y: auto;
 }
-
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
-
 thead th {
-  background: var(--surface2);
-  padding: 9px 12px;
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
+ background: var(--surface2);
+ padding: 9px 12px;
+ text-align: left;
+ font-family: var(--mono);
+ font-size: 10px;
+ color: var(--text-dim);
+ text-transform: uppercase;
+ letter-spacing: 0.06em;
+ border-bottom: 1px solid var(--border);
+ position: sticky;
+ top: 0;
 }
-
 tbody td {
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--border2);
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  vertical-align: top;
+ padding: 9px 12px;
+ border-bottom: 1px solid var(--border2);
+ font-family: var(--mono);
+ font-size: 11px;
+ color: var(--text);
+ vertical-align: top;
 }
-
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--surface2); }
 tbody tr.flagrow td { background: #FFF0F0; }
 tbody tr.flagrow:hover td { background: #FFE5E5; }
 tbody tr.duperow td { background: #FFFBF0; }
 tbody tr.duperow:hover td { background: #FFF5D6; }
-
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
@@ -363,607 +306,537 @@ tbody tr.duperow:hover td { background: #FFF5D6; }
 .pill-multi { background: #E8F4FD; color: #1A5276; }
 tbody tr.multirow td { background: #F0F8FF; }
 tbody tr.multirow:hover td { background: #E8F4FD; }
-
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
-
 .action-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--text);
-  font-family: var(--sans);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.15s;
+ padding: 10px 20px;
+ border-radius: 8px;
+ font-size: 11px;
+ font-weight: 700;
+ cursor: pointer;
+ border: 1px solid var(--border);
+ background: var(--surface2);
+ color: var(--text);
+ font-family: var(--sans);
+ text-transform: uppercase;
+ letter-spacing: 0.05em;
+ transition: all 0.15s;
 }
-
 .action-btn:hover { border-color: var(--burgundy); color: var(--burgundy); }
 .action-btn.primary { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
 .action-btn.primary:hover { background: var(--burgundy-bright); }
-
 #key-setup input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px 10px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  outline: none;
-  margin-bottom: 6px;
+ width: 100%;
+ background: var(--surface2);
+ border: 1px solid var(--border);
+ border-radius: 6px;
+ padding: 8px 10px;
+ font-family: var(--mono);
+ font-size: 11px;
+ color: var(--text);
+ outline: none;
+ margin-bottom: 6px;
 }
-
 #key-setup button {
-  width: 100%;
-  background: var(--burgundy);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+ width: 100%;
+ background: var(--burgundy);
+ color: #fff;
+ border: none;
+ border-radius: 6px;
+ padding: 8px;
+ font-family: var(--sans);
+ font-size: 11px;
+ font-weight: 700;
+ cursor: pointer;
+ text-transform: uppercase;
+ letter-spacing: 0.05em;
 }
 </style>
 </head>
 <body>
 <div class="shell">
-
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo">
-        <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h2.5a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.23 1.03l-1.5 1.5a11 11 0 005.27 5.27l1.5-1.5a1 1 0 011.03-.23l3.6 1.2A1 1 0 0121 16.5V19a2 2 0 01-2 2h-1C8.16 21 3 15.84 3 9V8a2 2 0 010-.5V5z"/></svg>
-      </div>
-      <div class="brand-name">TrackStream</div>
-      <div class="brand-version">V2.0 · THIG · LST · BAY</div>
-    </div>
-
-    <div class="sidebar-stats">
-      <div class="stat-row">
-        <span class="stat-name">Total Records</span>
-        <span class="stat-num loading" id="s-total">—</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-name">CallSource</span>
-        <span class="stat-num loading" id="s-cs">—</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-name">Convirza</span>
-        <span class="stat-num loading" id="s-cv">—</span>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-item active" onclick="showPanel('lookup')" id="nav-lookup">
-        <span class="nav-icon">🔍</span><span>Lookup</span>
-      </div>
-      <div class="nav-item" onclick="showPanel('qc')" id="nav-qc">
-        <span class="nav-icon">📋</span><span>Booklet QC</span>
-      </div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="conn-status" style="margin-bottom:10px">
-        <div class="conn-dot loading" id="conn-dot"></div>
-        <span id="conn-label">Connecting...</span>
-      </div>
-      <div id="key-setup" style="display:none">
-        <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
-        <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." />
-        <button onclick="saveClaudeKey()">Save Key</button>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-
-    <section class="panel active" id="panel-lookup">
-      <div class="panel-header">
-        <div class="panel-title">Number Lookup</div>
-        <div class="panel-sub">Search across all books and platforms instantly</div>
-      </div>
-
-      <div class="search-box">
-        <input type="text" class="search-input" id="inp" placeholder="Enter tracking number..." maxlength="20" />
-        <button class="search-btn" id="btn" disabled>Lookup</button>
-      </div>
-
-      <div class="lookup-status loading" id="status">Loading records...</div>
-
-      <div class="result-card" id="result">
-        <div class="result-card-head">
-          <span class="result-status-label ok" id="found-label">● MATCH FOUND</span>
-          <div class="result-badges" id="badges"></div>
-        </div>
-        <div class="result-card-body" id="result-body"></div>
-      </div>
-    </section>
-
-    <section class="panel" id="panel-qc">
-      <div class="panel-header">
-        <div class="panel-title">Booklet QC Scanner</div>
-        <div class="panel-sub">Claude Vision reads every page — text and image layers</div>
-      </div>
-
-      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-file').click()">
-        <div class="upload-zone-icon">📄</div>
-        <div class="upload-zone-title">Upload Booklet PDF</div>
-        <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
-        <div class="upload-zone-pill">Powered by Claude Vision</div>
-      </div>
-      <input type="file" id="pdf-file" accept=".pdf" />
-
-      <div class="scan-progress" id="scan-progress">
-        <div class="scan-spinner"></div>
-        <div class="scan-stage" id="scan-stage">Uploading PDF...</div>
-        <div class="scan-detail" id="scan-detail">Preparing file</div>
-      </div>
-
-      <div class="qc-results" id="qc-results">
-        <div class="qc-scorecards">
-          <div class="scorecard">
-            <div class="sc-val blue" id="qc-total">0</div>
-            <div class="sc-label">Numbers Found</div>
-          </div>
-          <div class="scorecard">
-            <div class="sc-val green" id="qc-matched">0</div>
-            <div class="sc-label">Matched</div>
-          </div>
-          <div class="scorecard">
-            <div class="sc-val red" id="qc-flagged">0</div>
-            <div class="sc-label">Review Required</div>
-          </div>
-        </div>
-
-        <div class="report-switcher">
-          <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
-          <button class="rsw-btn" onclick="switchReport('flags')">⚠ Flags Only</button>
-        </div>
-
-        <div class="report-view active" id="report-all">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Page</th><th>Number</th><th>Status</th><th>Customer</th><th>Trade</th><th>Zone</th><th>Book</th><th>Platform</th></tr></thead>
-              <tbody id="tbody-all"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="report-view" id="report-flags">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Page</th><th>Number</th><th>Note</th></tr></thead>
-              <tbody id="tbody-flags"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="qc-actions">
-          <button class="action-btn primary" onclick="exportCSV()">Export CSV</button>
-          <button class="action-btn" onclick="resetQC()">Scan Another</button>
-        </div>
-      </div>
-    </section>
-
-  </main>
+ <aside class="sidebar">
+ <div class="sidebar-brand">
+ <div class="brand-logo">
+ <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h2.5a1 1 0 01.95.68l1.2 3.6a1 1 0 01-.23 1.03l-1.5 1.5a11 11 0 005.27 5.27l1.5-1.5a1 1 0 011.03-.23l3.6 1.2A1 1 0 0121 16.5V19a2 2 0 01-2 2h-1C8.16 21 3 15.84 3 9V8a2 2 0 010-.5V5z"/></svg>
+ </div>
+ <div class="brand-name">TrackStream</div>
+ <div class="brand-version">V2.0 · THIG · LST · BAY</div>
+ </div>
+ <div class="sidebar-stats">
+ <div class="stat-row">
+ <span class="stat-name">Total Records</span>
+ <span class="stat-num loading" id="s-total">—</span>
+ </div>
+ <div class="stat-row">
+ <span class="stat-name">CallSource</span>
+ <span class="stat-num loading" id="s-cs">—</span>
+ </div>
+ <div class="stat-row">
+ <span class="stat-name">Convirza</span>
+ <span class="stat-num loading" id="s-cv">—</span>
+ </div>
+ </div>
+ <nav class="sidebar-nav">
+ <div class="nav-item active" onclick="showPanel('lookup')" id="nav-lookup">
+ <span class="nav-icon">🔍</span><span>Lookup</span>
+ </div>
+ <div class="nav-item" onclick="showPanel('qc')" id="nav-qc">
+ <span class="nav-icon">📋</span><span>Booklet QC</span>
+ </div>
+ </nav>
+ <div class="sidebar-footer">
+ <div class="conn-status" style="margin-bottom:10px">
+ <div class="conn-dot loading" id="conn-dot"></div>
+ <span id="conn-label">Connecting...</span>
+ </div>
+ <div id="key-setup" style="display:none">
+ <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Anthropic API Key</div>
+ <input type="password" id="claude-key-input" placeholder="sk-ant-api03-..." />
+ <button onclick="saveClaudeKey()">Save Key</button>
+ </div>
+ </div>
+ </aside>
+ <main class="main">
+ <section class="panel active" id="panel-lookup">
+ <div class="panel-header">
+ <div class="panel-title">Number Lookup</div>
+ <div class="panel-sub">Search across all books and platforms instantly</div>
+ </div>
+ <div class="search-box">
+ <input type="text" class="search-input" id="inp" placeholder="Enter tracking number..." maxlength="20" />
+ <button class="search-btn" id="btn" disabled>Lookup</button>
+ </div>
+ <div class="lookup-status loading" id="status">Loading records...</div>
+ <div class="result-card" id="result">
+ <div class="result-card-head">
+ <span class="result-status-label ok" id="found-label">● MATCH FOUND</span>
+ <div class="result-badges" id="badges"></div>
+ </div>
+ <div class="result-card-body" id="result-body"></div>
+ </div>
+ </section>
+ <section class="panel" id="panel-qc">
+ <div class="panel-header">
+ <div class="panel-title">Booklet QC Scanner</div>
+ <div class="panel-sub">Claude Vision reads every page — text and image layers</div>
+ </div>
+ <div class="upload-zone" id="upload-zone" onclick="document.getElementById('pdf-file').click()">
+ <div class="upload-zone-icon">📄</div>
+ <div class="upload-zone-title">Upload Booklet PDF</div>
+ <div class="upload-zone-sub">Drop your THIG, LST, or BAY booklet here<br>All pages scanned automatically</div>
+ <div class="upload-zone-pill">Powered by Claude Vision</div>
+ </div>
+ <input type="file" id="pdf-file" accept=".pdf" />
+ <div class="scan-progress" id="scan-progress">
+ <div class="scan-spinner"></div>
+ <div class="scan-stage" id="scan-stage">Uploading PDF...</div>
+ <div class="scan-detail" id="scan-detail">Preparing file</div>
+ </div>
+ <div class="qc-results" id="qc-results">
+ <div class="qc-scorecards">
+ <div class="scorecard">
+ <div class="sc-val blue" id="qc-total">0</div>
+ <div class="sc-label">Numbers Found</div>
+ </div>
+ <div class="scorecard">
+ <div class="sc-val green" id="qc-matched">0</div>
+ <div class="sc-label">Matched</div>
+ </div>
+ <div class="scorecard">
+ <div class="sc-val red" id="qc-flagged">0</div>
+ <div class="sc-label">Review Required</div>
+ </div>
+ </div>
+ <div class="report-switcher">
+ <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
+ <button class="rsw-btn" onclick="switchReport('flags')">⚠ Flags Only</button>
+ </div>
+ <div class="report-view active" id="report-all">
+ <div class="table-wrap">
+ <table>
+ <thead><tr><th>Page</th><th>Number</th><th>Status</th><th>Customer</th><th>Trade</th><th>Zone</th><th>Book</th><th>Platform</th></tr></thead>
+ <tbody id="tbody-all"></tbody>
+ </table>
+ </div>
+ </div>
+ <div class="report-view" id="report-flags">
+ <div class="table-wrap">
+ <table>
+ <thead><tr><th>Page</th><th>Number</th><th>Note</th></tr></thead>
+ <tbody id="tbody-flags"></tbody>
+ </table>
+ </div>
+ </div>
+ <div class="qc-actions">
+ <button class="action-btn primary" onclick="exportCSV()">Export CSV</button>
+ <button class="action-btn" onclick="resetQC()">Scan Another</button>
+ </div>
+ </div>
+ </section>
+ </main>
 </div>
-
 <script>
 var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0mjc-wuCBZ44-4A/exec';
 var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
-
 var records = [], ready = false, qcResults = [];
-
 function norm(n){ return (n||'').replace(/\D/g,'').slice(-10); }
 function setStat(id,v){ var e=document.getElementById(id); e.textContent=v.toLocaleString(); e.classList.remove('loading'); }
 function setConn(s,m){ document.getElementById('conn-dot').className='conn-dot '+s; document.getElementById('conn-label').textContent=m; }
 function setLookupStatus(m,c){ var s=document.getElementById('status'); s.textContent=m; s.className='lookup-status'+(c?' '+c:''); }
-
 function showPanel(p){
-  document.querySelectorAll('.panel').forEach(function(e){ e.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(e){ e.classList.remove('active'); });
-  document.getElementById('panel-'+p).classList.add('active');
-  document.getElementById('nav-'+p).classList.add('active');
+ document.querySelectorAll('.panel').forEach(function(e){ e.classList.remove('active'); });
+ document.querySelectorAll('.nav-item').forEach(function(e){ e.classList.remove('active'); });
+ document.getElementById('panel-'+p).classList.add('active');
+ document.getElementById('nav-'+p).classList.add('active');
 }
-
 function switchReport(t){
-  document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
-  document.getElementById('report-all').classList.toggle('active', t==='all');
-  document.getElementById('report-flags').classList.toggle('active', t==='flags');
+ document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
+ document.getElementById('report-all').classList.toggle('active', t==='all');
+ document.getElementById('report-flags').classList.toggle('active', t==='flags');
 }
-
 var inp=document.getElementById('inp'), btn=document.getElementById('btn');
 var resultEl=document.getElementById('result'), foundLabel=document.getElementById('found-label');
 var badgesEl=document.getElementById('badges'), bodyEl=document.getElementById('result-body');
-
 function rbadge(t,c){ var b=document.createElement('span'); b.className='rbadge '+c; b.textContent=t; return b; }
-
 function rfield(l,v,m,f){
-  var d=document.createElement('div'); d.className='rf'+(f?' full':'');
-  d.innerHTML='<div class="rf-label">'+l+'</div><div class="rf-val'+(m?' mono':'')+(!v||v==='N/A'?' na':'')+'">'+( v||'N/A')+'</div>';
-  return d;
+ var d=document.createElement('div'); d.className='rf'+(f?' full':'');
+ d.innerHTML='<div class="rf-label">'+l+'</div><div class="rf-val'+(m?' mono':'')+(!v||v==='N/A'?' na':'')+'">'+( v||'N/A')+'</div>';
+ return d;
 }
-
 function rdiv(){ var d=document.createElement('div'); d.className='rf-div'; return d; }
-
 function showResult(r){
-  resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
-  var plat=(r.platform||'').toUpperCase(), book=(r.book||'').toUpperCase();
-  foundLabel.className='result-status-label ok'; foundLabel.textContent='● MATCH FOUND';
-  badgesEl.appendChild(rbadge(plat||'CALLSOURCE', plat==='CONVIRZA'?'rb-cv':'rb-cs'));
-  if(book==='THIG') badgesEl.appendChild(rbadge('THIG','rb-thig'));
-  else if(book==='LST') badgesEl.appendChild(rbadge('LST','rb-lst'));
-  else if(book==='BAY') badgesEl.appendChild(rbadge('BAY','rb-bay'));
-  bodyEl.appendChild(rfield('Tracking Number',r.tracking_number,true));
-  bodyEl.appendChild(rfield('Zone',r.zone,true));
-  bodyEl.appendChild(rdiv());
-  bodyEl.appendChild(rfield('Customer',r.customer,false));
-  bodyEl.appendChild(rfield('Trade',r.trade,false));
-  bodyEl.appendChild(rfield('Target Number',r.target_number,true));
-  bodyEl.appendChild(rfield('Source',r.source,true));
-  if(plat==='CONVIRZA'){
-    bodyEl.appendChild(rdiv());
-    bodyEl.appendChild(rfield('Convirza TN ID',r.convirza_tn_id,true));
-    bodyEl.appendChild(rfield('TN Name',r.convirza_tn_name,false));
-    bodyEl.appendChild(rfield('Campaign',r.convirza_campaign,false));
-    bodyEl.appendChild(rfield('Status',r.convirza_status,false));
-  }
+ resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
+ var plat=(r.platform||'').toUpperCase(), book=(r.book||'').toUpperCase();
+ foundLabel.className='result-status-label ok'; foundLabel.textContent='● MATCH FOUND';
+ badgesEl.appendChild(rbadge(plat||'CALLSOURCE', plat==='CONVIRZA'?'rb-cv':'rb-cs'));
+ if(book==='THIG') badgesEl.appendChild(rbadge('THIG','rb-thig'));
+ else if(book==='LST') badgesEl.appendChild(rbadge('LST','rb-lst'));
+ else if(book==='BAY') badgesEl.appendChild(rbadge('BAY','rb-bay'));
+ bodyEl.appendChild(rfield('Tracking Number',r.tracking_number,true));
+ bodyEl.appendChild(rfield('Zone',r.zone,true));
+ bodyEl.appendChild(rdiv());
+ bodyEl.appendChild(rfield('Customer',r.customer,false));
+ bodyEl.appendChild(rfield('Trade',r.trade,false));
+ bodyEl.appendChild(rfield('Target Number',r.target_number,true));
+ bodyEl.appendChild(rfield('Source',r.source,true));
+ if(plat==='CONVIRZA'){
+ bodyEl.appendChild(rdiv());
+ bodyEl.appendChild(rfield('Convirza TN ID',r.convirza_tn_id,true));
+ bodyEl.appendChild(rfield('TN Name',r.convirza_tn_name,false));
+ bodyEl.appendChild(rfield('Campaign',r.convirza_campaign,false));
+ bodyEl.appendChild(rfield('Status',r.convirza_status,false));
+ }
 }
-
 function showNotFound(num){
-  resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
-  foundLabel.className='result-status-label err'; foundLabel.textContent='✕ NOT FOUND';
-  bodyEl.appendChild(rfield('Searched',num,true,true));
+ resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
+ foundLabel.className='result-status-label err'; foundLabel.textContent='✕ NOT FOUND';
+ bodyEl.appendChild(rfield('Searched',num,true,true));
 }
-
 function doLookup(){
-  if(!ready) return;
-  var raw=inp.value.trim(); if(!raw) return;
-  var d=norm(raw);
-  if(d.length<7){ setLookupStatus('Enter at least 7 digits','err'); return; }
-  var m=records.filter(function(r){ return norm(r.tracking_number)===d; })[0];
-  if(m){ setLookupStatus('Match found — '+d,'ok'); showResult(m); }
-  else { setLookupStatus('No record found for '+d,'err'); showNotFound(d); }
+ if(!ready) return;
+ var raw=inp.value.trim(); if(!raw) return;
+ var d=norm(raw);
+ if(d.length<7){ setLookupStatus('Enter at least 7 digits','err'); return; }
+ var m=records.filter(function(r){ return norm(r.tracking_number)===d; })[0];
+ if(m){ setLookupStatus('Match found — '+d,'ok'); showResult(m); }
+ else { setLookupStatus('No record found for '+d,'err'); showNotFound(d); }
 }
-
 inp.addEventListener('keydown',function(e){ if(e.key==='Enter') doLookup(); });
 btn.addEventListener('click',doLookup);
 inp.addEventListener('input',function(){ if(ready){ resultEl.classList.remove('show'); setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok'); }});
-
 var uploadZone=document.getElementById('upload-zone');
 var pdfFile=document.getElementById('pdf-file');
-
 uploadZone.addEventListener('dragover',function(e){ e.preventDefault(); uploadZone.classList.add('drag'); });
 uploadZone.addEventListener('dragleave',function(){ uploadZone.classList.remove('drag'); });
 uploadZone.addEventListener('drop',function(e){ e.preventDefault(); uploadZone.classList.remove('drag'); if(e.dataTransfer.files[0]) startScan(e.dataTransfer.files[0]); });
 pdfFile.addEventListener('change',function(){ if(pdfFile.files[0]) startScan(pdfFile.files[0]); });
-
 function setScanState(s,d){ document.getElementById('scan-stage').textContent=s; document.getElementById('scan-detail').textContent=d; }
-
 async function startScan(file){
-  if(!ready){ alert('Records still loading — try again in a moment.'); return; }
-  if(!CLAUDE_KEY){ alert('Please enter your Anthropic API key in the sidebar first.'); return; }
-
-  uploadZone.style.display='none';
-  document.getElementById('qc-results').classList.remove('show');
-  document.getElementById('scan-progress').classList.add('show');
-  setScanState('Reading PDF...', (file.size/1024/1024).toFixed(1)+' MB');
-
-  try {
-    var base64 = await new Promise(function(resolve, reject){
-      var reader = new FileReader();
-      reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
-    setScanState('Claude is reading the booklet...','Analyzing all pages — this may take 30–60 seconds');
-
-    var response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': CLAUDE_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 8096,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'document',
-              source: { type: 'base64', media_type: 'application/pdf', data: base64 }
-            },
-            {
-              type: 'text',
-              text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}]. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, do not include any explanation.'
-            }
-          ]
-        }]
-      })
-    });
-
-    var json = await response.json();
-    if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
-
-    var text = json.content && json.content[0] ? json.content[0].text : '[]';
-    text = text.replace(/```json|```/g,'').trim();
-    var parsed = JSON.parse(text);
-
-    document.getElementById('scan-progress').classList.remove('show');
-    buildReport(parsed);
-
-  } catch(err){
-    document.getElementById('scan-progress').classList.remove('show');
-    uploadZone.style.display='block';
-    alert('Scan failed: '+err.message);
-  }
+ if(!ready){ alert('Records still loading — try again in a moment.'); return; }
+ if(!CLAUDE_KEY){ alert('Please enter your Anthropic API key in the sidebar first.'); return; }
+ uploadZone.style.display='none';
+ document.getElementById('qc-results').classList.remove('show');
+ document.getElementById('scan-progress').classList.add('show');
+ setScanState('Reading PDF...', (file.size/1024/1024).toFixed(1)+' MB');
+ try {
+ var base64 = await new Promise(function(resolve, reject){
+ var reader = new FileReader();
+ reader.onload = function(e){ resolve(e.target.result.split(',')[1]); };
+ reader.onerror = reject;
+ reader.readAsDataURL(file);
+ });
+ setScanState('Claude is reading the booklet...','Analyzing all pages — this may take 30–60 seconds');
+ var response = await fetch('https://api.anthropic.com/v1/messages', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'x-api-key': CLAUDE_KEY,
+ 'anthropic-version': '2023-06-01',
+ 'anthropic-dangerous-direct-browser-access': 'true'
+ },
+ body: JSON.stringify({
+ model: 'claude-haiku-4-5-20251001',
+ max_tokens: 8096,
+ messages: [{
+ role: 'user',
+ content: [
+ {
+ type: 'document',
+ source: { type: 'base64', media_type: 'application/pdf', data: base64 }
+ },
+ {
+ type: 'text',
+ text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}]. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, do not include any explanation.'
+ }
+ ]
+ }]
+ })
+ });
+ var json = await response.json();
+ if(json.error) throw new Error(json.error.message||JSON.stringify(json.error));
+ var text = json.content && json.content[0] ? json.content[0].text : '[]';
+ text = text.replace(/```json|```/g,'').trim();
+ var parsed = JSON.parse(text);
+ document.getElementById('scan-progress').classList.remove('show');
+ buildReport(parsed);
+ } catch(err){
+ document.getElementById('scan-progress').classList.remove('show');
+ uploadZone.style.display='block';
+ alert('Scan failed: '+err.message);
+ }
 }
-
 function fmtPhone(n){ return String(n).replace(/(\d{3})(\d{3})(\d{4})/,'($1) $2-$3'); }
-
 function buildReport(data){
-  qcResults = [];
-  var tbAll = document.getElementById('tbody-all');
-  var tbFlags = document.getElementById('tbody-flags');
-  tbAll.innerHTML=''; tbFlags.innerHTML='';
-  var matched=0, flagged=0;
-
-  data.sort(function(a,b){ return a.page-b.page; });
-
-  // Track pages per tracking number (for duplicate number detection)
-  var numPages={};
-  data.forEach(function(item){
-    var num=String(item.number).replace(/\D/g,'');
-    if(num.length!==10) return;
-    if(!numPages[num]) numPages[num]=[];
-    if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
-  });
-
-  // Track pages per customer+trade combo (for duplicate ad detection)
-  // Key: CUSTOMER|TRADE — same company same trade on multiple pages = real duplicate
-  var adPages={};
-  data.forEach(function(item){
-    var num=String(item.number).replace(/\D/g,'');
-    if(num.length!==10) return;
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
-    if(!rec) return;
-    var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
-    if(!adPages[key]) adPages[key]=[];
-    var exists=adPages[key].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
-    if(!exists) adPages[key].push({page:item.page, num:num});
-  });
-
-  // Track pages per customer only (for multi-ad detection)
-  // Key: CUSTOMER — same company different trades = intentional multi-ad, not a problem
-  var customerPages={};
-  data.forEach(function(item){
-    var num=String(item.number).replace(/\D/g,'');
-    if(num.length!==10) return;
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
-    if(!rec) return;
-    var ckey=(rec.customer||'').toUpperCase().trim();
-    if(!customerPages[ckey]) customerPages[ckey]=[];
-    var exists=customerPages[ckey].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
-    if(!exists) customerPages[ckey].push({page:item.page, num:num, trade:(rec.trade||'').toUpperCase().trim()});
-  });
-
-  data.forEach(function(item){
-    var num=String(item.number).replace(/\D/g,'');
-    var pg=item.page;
-    if(num.length!==10) return;
-
-    var normNum=norm(num);
-    var rec=records.filter(function(r){ return norm(r.tracking_number)===normNum; })[0];
-    var isMatch=!!rec;
-
-    // Duplicate number: same TN appears on multiple pages
-    var isDupeNum=numPages[num]&&numPages[num].length>1;
-
-    // Duplicate ad: same customer AND same trade on multiple pages (real problem)
-    var isDupeAd=false;
-    var dupeAdPages=[];
-
-    // Multi-ad: same customer but DIFFERENT trades on multiple pages (expected/OK)
-    var isMultiAd=false;
-    var multiAdInfo=[];
-
-    if(rec){
-      var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
-      if(adPages[key]&&adPages[key].length>1){
-        isDupeAd=true;
-        dupeAdPages=adPages[key];
-      }
-      var ckey=(rec.customer||'').toUpperCase().trim();
-      if(!isDupeAd && customerPages[ckey]&&customerPages[ckey].length>1){
-        // Same customer, multiple entries — check if trades differ
-        var trades=customerPages[ckey].map(function(e){ return e.trade; });
-        var uniqueTrades=trades.filter(function(t,i){ return trades.indexOf(t)===i; });
-        if(uniqueTrades.length>1){
-          isMultiAd=true;
-          multiAdInfo=customerPages[ckey];
-        }
-      }
-    }
-
-    // Mismatch: TN is in DB but the ad name/trade on the page doesn't match DB record
-    var isMismatch=false;
-    if(isMatch && rec){
-      var adName=(item.ad_name||'').toUpperCase().trim();
-      var adTrade=(item.ad_trade||'').toUpperCase().trim();
-      if(adName){
-        var dbName=(rec.customer||'').toUpperCase().trim();
-        var dbTrade=(rec.trade||'').toUpperCase().trim();
-        var dbWords=dbName.split(/\s+/).filter(function(w){ return w.length>3; });
-        var nameMatch=dbWords.some(function(w){ return adName.indexOf(w)>-1; })||adName.indexOf(dbName)>-1||dbName.indexOf(adName)>-1;
-        var tradeMatch=!adTrade||dbTrade.indexOf(adTrade)>-1||adTrade.indexOf(dbTrade)>-1||adTrade.split(/\s+/).some(function(w){ return w.length>3&&dbTrade.indexOf(w)>-1; });
-        if(!nameMatch||!tradeMatch) isMismatch=true;
-      }
-    }
-
-    if(isMatch) matched++; else flagged++;
-
-    var status = !isMatch ? 'NOT FOUND'
-      : isMismatch ? 'MISMATCH'
-      : isDupeNum ? 'DUPLICATE NUMBER'
-      : isDupeAd ? 'DUPLICATE AD'
-      : isMultiAd ? 'MULTI-AD'
-      : 'MATCH';
-
-    qcResults.push({
-      page:pg, num:num, status:status,
-      customer:rec?rec.customer:'',
-      trade:rec?rec.trade:'',
-      zone:rec?rec.zone:'',
-      book:rec?rec.book:'',
-      platform:rec?rec.platform:''
-    });
-
-    var tr=document.createElement('tr');
-    if(!isMatch||isMismatch) tr.className='flagrow';
-    else if(isDupeNum||isDupeAd) tr.className='duperow';
-    else if(isMultiAd) tr.className='multirow';
-
-    var pill = !isMatch
-      ? '<span class="pill pill-miss">✕ Not Found</span>'
-      : isMismatch   ? '<span class="pill pill-miss">⚠ Mismatch</span>'
-      : isDupeNum    ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
-      : isDupeAd     ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
-      : isMultiAd    ? '<span class="pill pill-multi">✓ Multi-Ad</span>'
-      : '<span class="pill pill-match">✓ Match</span>';
-
-    tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
-      +'<td>'+pill+'</td>'
-      +'<td>'+(rec?rec.customer:'—')+'</td>'
-      +'<td>'+(rec?rec.trade:'—')+'</td>'
-      +'<td>'+(rec?rec.zone:'—')+'</td>'
-      +'<td>'+(rec?rec.book:'—')+'</td>'
-      +'<td>'+(rec?rec.platform:'—')+'</td>';
-    tbAll.appendChild(tr);
-
-    if(!isMatch){
-      var tr2=document.createElement('tr'); tr2.className='flagrow';
-      tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
-      tbFlags.appendChild(tr2);
-    } else if(isMismatch){
-      var trM=document.createElement('tr'); trM.className='flagrow';
-      trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Mismatch: '+(item.ad_name||'?')+' / '+(item.ad_trade||'?')+' -- DB has: '+(rec?rec.customer:'?')+' / '+(rec?(rec.trade||'?'):'?')+'</td>';
-      tbFlags.appendChild(trM);
-    } else if(isDupeNum){
-      var tr3=document.createElement('tr'); tr3.className='duperow';
-      tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
-      tbFlags.appendChild(tr3);
-    } else if(isDupeAd){
-      var tr4=document.createElement('tr'); tr4.className='duperow';
-      var pageList=dupeAdPages.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
-      tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — same trade on: '+pageList+'</td>';
-      tbFlags.appendChild(tr4);
-    }
-    // MULTI-AD is intentional — does not appear in flags tab, only in full report
-  });
-
-  document.getElementById('qc-total').textContent=matched+flagged;
-  document.getElementById('qc-matched').textContent=matched;
-  document.getElementById('qc-flagged').textContent=flagged;
-
-  if(tbFlags.children.length===0){
-    tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ No flags — all numbers matched</td></tr>';
-  }
-
-  document.getElementById('qc-results').classList.add('show');
+ qcResults = [];
+ var tbAll = document.getElementById('tbody-all');
+ var tbFlags = document.getElementById('tbody-flags');
+ tbAll.innerHTML=''; tbFlags.innerHTML='';
+ var matched=0, flagged=0;
+ data.sort(function(a,b){ return a.page-b.page; });
+ // Track pages per tracking number (for duplicate number detection)
+ var numPages={};
+ data.forEach(function(item){
+ var num=String(item.number).replace(/\D/g,'');
+ if(num.length!==10) return;
+ if(!numPages[num]) numPages[num]=[];
+ if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
+ });
+ // Track pages per customer+trade combo (for duplicate ad detection)
+ // Key: CUSTOMER|TRADE — same company same trade on multiple pages = real duplicate
+ var adPages={};
+ data.forEach(function(item){
+ var num=String(item.number).replace(/\D/g,'');
+ if(num.length!==10) return;
+ var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
+ if(!rec) return;
+ var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
+ if(!adPages[key]) adPages[key]=[];
+ var exists=adPages[key].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
+ if(!exists) adPages[key].push({page:item.page, num:num});
+ });
+ // Track pages per customer only (for multi-ad detection)
+ // Key: CUSTOMER — same company different trades = intentional multi-ad, not a problem
+ var customerPages={};
+ data.forEach(function(item){
+ var num=String(item.number).replace(/\D/g,'');
+ if(num.length!==10) return;
+ var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
+ if(!rec) return;
+ var ckey=(rec.customer||'').toUpperCase().trim();
+ if(!customerPages[ckey]) customerPages[ckey]=[];
+ var exists=customerPages[ckey].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
+ if(!exists) customerPages[ckey].push({page:item.page, num:num, trade:(rec.trade||'').toUpperCase().trim()});
+ });
+ data.forEach(function(item){
+ var num=String(item.number).replace(/\D/g,'');
+ var pg=item.page;
+ if(num.length!==10) return;
+ var normNum=norm(num);
+ var rec=records.filter(function(r){ return norm(r.tracking_number)===normNum; })[0];
+ var isMatch=!!rec;
+ // Duplicate number: same TN appears on multiple pages
+ var isDupeNum=numPages[num]&&numPages[num].length>1;
+ // Duplicate ad: same customer AND same trade on multiple pages (real problem)
+ var isDupeAd=false;
+ var dupeAdPages=[];
+ // Multi-ad: same customer but DIFFERENT trades on multiple pages (expected/OK)
+ var isMultiAd=false;
+ var multiAdInfo=[];
+ if(rec){
+ var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
+ if(adPages[key]&&adPages[key].length>1){
+ isDupeAd=true;
+ dupeAdPages=adPages[key];
+ }
+ var ckey=(rec.customer||'').toUpperCase().trim();
+ if(!isDupeAd && customerPages[ckey]&&customerPages[ckey].length>1){
+ // Same customer, multiple entries — check if trades differ
+ var trades=customerPages[ckey].map(function(e){ return e.trade; });
+ var uniqueTrades=trades.filter(function(t,i){ return trades.indexOf(t)===i; });
+ if(uniqueTrades.length>1){
+ isMultiAd=true;
+ multiAdInfo=customerPages[ckey];
+ }
+ }
+ }
+ // Mismatch: TN is in DB but the ad name/trade on the page doesn't match DB record
+ // Only flag if BOTH name AND trade fail — one partial mismatch is too noisy
+ var isMismatch=false;
+ if(isMatch && rec){
+ var adName=(item.ad_name||'').toUpperCase().trim();
+ var adTrade=(item.ad_trade||'').toUpperCase().trim();
+ if(adName && adTrade){
+ var dbName=(rec.customer||'').toUpperCase().trim();
+ var dbTrade=(rec.trade||'').toUpperCase().trim();
+ var dbWords=dbName.split(/\s+/).filter(function(w){ return w.length>2; });
+ var adWords=adName.split(/\s+/).filter(function(w){ return w.length>2; });
+ var nameMatch=dbWords.some(function(w){ return adName.indexOf(w)>-1; })
+ || adWords.some(function(w){ return dbName.indexOf(w)>-1; })
+ || adName.indexOf(dbName)>-1 || dbName.indexOf(adName)>-1;
+ var tradeMatch=dbTrade.indexOf(adTrade)>-1 || adTrade.indexOf(dbTrade)>-1
+ || adTrade.split(/\s+/).some(function(w){ return w.length>2&&dbTrade.indexOf(w)>-1; })
+ || dbTrade.split(/\s+/).some(function(w){ return w.length>2&&adTrade.indexOf(w)>-1; });
+ // Only flag if BOTH name and trade fail to match
+ if(!nameMatch && !tradeMatch) isMismatch=true;
+ }
+ }
+ if(isMatch) matched++; else flagged++;
+ var status = !isMatch ? 'NOT FOUND'
+ : isMismatch ? 'MISMATCH'
+ : isDupeNum ? 'DUPLICATE NUMBER'
+ : isDupeAd ? 'DUPLICATE AD'
+ : isMultiAd ? 'MULTI-AD'
+ : 'MATCH';
+ qcResults.push({
+ page:pg, num:num, status:status,
+ customer:rec?rec.customer:'',
+ trade:rec?rec.trade:'',
+ zone:rec?rec.zone:'',
+ book:rec?rec.book:'',
+ platform:rec?rec.platform:''
+ });
+ var tr=document.createElement('tr');
+ if(!isMatch||isMismatch) tr.className='flagrow';
+ else if(isDupeNum||isDupeAd) tr.className='duperow';
+ else if(isMultiAd) tr.className='multirow';
+ var pill = !isMatch
+ ? '<span class="pill pill-miss">✕ Not Found</span>'
+ : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
+ : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
+ : isDupeAd ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
+ : isMultiAd ? '<span class="pill pill-multi">✓ Multi-Ad</span>'
+ : '<span class="pill pill-match">✓ Match</span>';
+ tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
+ +'<td>'+pill+'</td>'
+ +'<td>'+(rec?rec.customer:'—')+'</td>'
+ +'<td>'+(rec?rec.trade:'—')+'</td>'
+ +'<td>'+(rec?rec.zone:'—')+'</td>'
+ +'<td>'+(rec?rec.book:'—')+'</td>'
+ +'<td>'+(rec?rec.platform:'—')+'</td>';
+ tbAll.appendChild(tr);
+ if(!isMatch){
+ var tr2=document.createElement('tr'); tr2.className='flagrow';
+ tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
+ tbFlags.appendChild(tr2);
+ } else if(isMismatch){
+ var trM=document.createElement('tr'); trM.className='flagrow';
+ trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Mismatch: '+(item.ad_name||'?')+' / '+(item.ad_trade||'?')+' -- DB has: '+(rec?rec.customer:'?')+' / '+(rec?(rec.trade||'?'):'?')+'</td>';
+ tbFlags.appendChild(trM);
+ } else if(isDupeNum){
+ var tr3=document.createElement('tr'); tr3.className='duperow';
+ tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
+ tbFlags.appendChild(tr3);
+ } else if(isDupeAd){
+ var tr4=document.createElement('tr'); tr4.className='duperow';
+ var pageList=dupeAdPages.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
+ tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — same trade on: '+pageList+'</td>';
+ tbFlags.appendChild(tr4);
+ }
+ // MULTI-AD is intentional — does not appear in flags tab, only in full report
+ });
+ document.getElementById('qc-total').textContent=matched+flagged;
+ document.getElementById('qc-matched').textContent=matched;
+ document.getElementById('qc-flagged').textContent=flagged;
+ if(tbFlags.children.length===0){
+ tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ No flags — all numbers matched</td></tr>';
+ }
+ document.getElementById('qc-results').classList.add('show');
 }
-
 function resetQC(){
-  document.getElementById('qc-results').classList.remove('show');
-  uploadZone.style.display='block';
-  pdfFile.value=''; qcResults=[];
+ document.getElementById('qc-results').classList.remove('show');
+ uploadZone.style.display='block';
+ pdfFile.value=''; qcResults=[];
 }
-
 function exportCSV(){
-  var rows=[['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
-  qcResults.forEach(function(r){ rows.push([r.page,r.num,r.status,r.customer,r.trade,r.zone,r.book,r.platform]); });
-  var csv=rows.map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
-  var a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
-  a.download='trackstream_qc_report.csv';
-  a.click();
+ var rows=[['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
+ qcResults.forEach(function(r){ rows.push([r.page,r.num,r.status,r.customer,r.trade,r.zone,r.book,r.platform]); });
+ var csv=rows.map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
+ var a=document.createElement('a');
+ a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+ a.download='trackstream_qc_report.csv';
+ a.click();
 }
-
 function saveClaudeKey(){
-  var k=document.getElementById('claude-key-input').value.trim();
-  if(!k){ alert('Please paste your Anthropic API key'); return; }
-  localStorage.setItem('ts2_claude_key', k);
-  CLAUDE_KEY=k;
-  document.getElementById('key-setup').style.display='none';
-  alert('Key saved. You can now use the Booklet QC scanner.');
+ var k=document.getElementById('claude-key-input').value.trim();
+ if(!k){ alert('Please paste your Anthropic API key'); return; }
+ localStorage.setItem('ts2_claude_key', k);
+ CLAUDE_KEY=k;
+ document.getElementById('key-setup').style.display='none';
+ alert('Key saved. You can now use the Booklet QC scanner.');
 }
-
 if(!CLAUDE_KEY){
-  window.addEventListener('DOMContentLoaded', function(){
-    document.getElementById('key-setup').style.display='block';
-  });
+ window.addEventListener('DOMContentLoaded', function(){
+ document.getElementById('key-setup').style.display='block';
+ });
 }
-
 function processRecords(json){
-  if(!json.records){
-    setLookupStatus('Failed to load records','err');
-    setConn('err','Connection failed');
-    ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
-    return;
-  }
-  records=json.records.map(function(r){
-    return {
-      tracking_number: r.tn||r.tracking_number||'',
-      platform: r.platform||'',
-      book: r.book||'',
-      customer: r.customer||'',
-      trade: r.trade||'',
-      zone: r.zone||'',
-      target_number: r.target||r.target_number||'',
-      source: r.source||'',
-      convirza_tn_id: r.conv_id||r.convirza_tn_id||'',
-      convirza_tn_name: r.conv_name||r.convirza_tn_name||'',
-      convirza_campaign: r.conv_campaign||r.convirza_campaign||'',
-      convirza_status: r.conv_status||r.convirza_status||''
-    };
-  });
-  ready=true;
-  var cs=records.filter(function(r){ return (r.platform||'').toUpperCase()!=='CONVIRZA'; }).length;
-  var cv=records.filter(function(r){ return (r.platform||'').toUpperCase()==='CONVIRZA'; }).length;
-  setStat('s-total',records.length);
-  setStat('s-cs',cs);
-  setStat('s-cv',cv);
-  btn.disabled=false;
-  setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
-  setConn('ok',records.length.toLocaleString()+' records');
+ if(!json.records){
+ setLookupStatus('Failed to load records','err');
+ setConn('err','Connection failed');
+ ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+ return;
+ }
+ records=json.records.map(function(r){
+ return {
+ tracking_number: r.tn||r.tracking_number||'',
+ platform: r.platform||'',
+ book: r.book||'',
+ customer: r.customer||'',
+ trade: r.trade||'',
+ zone: r.zone||'',
+ target_number: r.target||r.target_number||'',
+ source: r.source||'',
+ convirza_tn_id: r.conv_id||r.convirza_tn_id||'',
+ convirza_tn_name: r.conv_name||r.convirza_tn_name||'',
+ convirza_campaign: r.conv_campaign||r.convirza_campaign||'',
+ convirza_status: r.conv_status||r.convirza_status||''
+ };
+ });
+ ready=true;
+ var cs=records.filter(function(r){ return (r.platform||'').toUpperCase()!=='CONVIRZA'; }).length;
+ var cv=records.filter(function(r){ return (r.platform||'').toUpperCase()==='CONVIRZA'; }).length;
+ setStat('s-total',records.length);
+ setStat('s-cs',cs);
+ setStat('s-cv',cv);
+ btn.disabled=false;
+ setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
+ setConn('ok',records.length.toLocaleString()+' records');
 }
-
 (function(){
-  try {
-    var script=document.createElement('script');
-    script.src=BACKEND+'?action=getAllRecords&callback=processRecords';
-    script.onerror=function(){
-      setLookupStatus('Failed to load records','err');
-      setConn('err','Connection failed');
-      ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
-    };
-    document.head.appendChild(script);
-  } catch(e){
-    setLookupStatus('Failed to load records','err');
-    setConn('err','Connection failed');
-    ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
-  }
+ try {
+ var script=document.createElement('script');
+ script.src=BACKEND+'?action=getAllRecords&callback=processRecords';
+ script.onerror=function(){
+ setLookupStatus('Failed to load records','err');
+ setConn('err','Connection failed');
+ ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+ };
+ document.head.appendChild(script);
+ } catch(e){
+ setLookupStatus('Failed to load records','err');
+ setConn('err','Connection failed');
+ ['s-total','s-cs','s-cv'].forEach(function(id){ document.getElementById(id).textContent='ERR'; });
+ }
 })();
 </script>
 </body>
