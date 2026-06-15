@@ -297,15 +297,9 @@ tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--surface2); }
 tbody tr.flagrow td { background: #FFF0F0; }
 tbody tr.flagrow:hover td { background: #FFE5E5; }
-tbody tr.duperow td { background: #FFFBF0; }
-tbody tr.duperow:hover td { background: #FFF5D6; }
 .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 500; }
 .pill-match { background: #D4EDDA; color: #155724; }
 .pill-miss { background: #F8D7DA; color: #721C24; }
-.pill-dupe { background: #FFF3CD; color: #856404; }
-.pill-multi { background: #E8F4FD; color: #1A5276; }
-tbody tr.multirow td { background: #F0F8FF; }
-tbody tr.multirow:hover td { background: #E8F4FD; }
 .qc-actions { display: flex; gap: 10px; margin-top: 14px; }
 .action-btn {
  padding: 10px 20px;
@@ -444,12 +438,12 @@ tbody tr.multirow:hover td { background: #E8F4FD; }
  </div>
  <div class="scorecard">
  <div class="sc-val red" id="qc-flagged">0</div>
- <div class="sc-label">Review Required</div>
+ <div class="sc-label">Not Found</div>
  </div>
  </div>
  <div class="report-switcher">
  <button class="rsw-btn active" onclick="switchReport('all')">Full Report</button>
- <button class="rsw-btn" onclick="switchReport('flags')">⚠ Flags Only</button>
+ <button class="rsw-btn" onclick="switchReport('flags')">✕ Not Found</button>
  </div>
  <div class="report-view active" id="report-all">
  <div class="table-wrap">
@@ -476,27 +470,32 @@ tbody tr.multirow:hover td { background: #E8F4FD; }
  </main>
 </div>
 <script>
-var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0mjc-wuCBZ44-4A/exec';
+var BACKEND = 'https://script.google.com/macros/s/AKfycbx_3w5omrF7OqlVUfG0tOjMFQk8Fd-quA_K4auawO6ZBwL--1u1mVX0hjc-wuCBZ44-4A/exec';
 var CLAUDE_KEY = localStorage.getItem('ts2_claude_key') || '';
 var records = [], ready = false, qcResults = [];
+
 function norm(n){ return (n||'').replace(/\D/g,'').slice(-10); }
 function setStat(id,v){ var e=document.getElementById(id); e.textContent=v.toLocaleString(); e.classList.remove('loading'); }
 function setConn(s,m){ document.getElementById('conn-dot').className='conn-dot '+s; document.getElementById('conn-label').textContent=m; }
 function setLookupStatus(m,c){ var s=document.getElementById('status'); s.textContent=m; s.className='lookup-status'+(c?' '+c:''); }
+
 function showPanel(p){
  document.querySelectorAll('.panel').forEach(function(e){ e.classList.remove('active'); });
  document.querySelectorAll('.nav-item').forEach(function(e){ e.classList.remove('active'); });
  document.getElementById('panel-'+p).classList.add('active');
  document.getElementById('nav-'+p).classList.add('active');
 }
+
 function switchReport(t){
  document.querySelectorAll('.rsw-btn').forEach(function(b,i){ b.classList.toggle('active',['all','flags'][i]===t); });
  document.getElementById('report-all').classList.toggle('active', t==='all');
  document.getElementById('report-flags').classList.toggle('active', t==='flags');
 }
+
 var inp=document.getElementById('inp'), btn=document.getElementById('btn');
 var resultEl=document.getElementById('result'), foundLabel=document.getElementById('found-label');
 var badgesEl=document.getElementById('badges'), bodyEl=document.getElementById('result-body');
+
 function rbadge(t,c){ var b=document.createElement('span'); b.className='rbadge '+c; b.textContent=t; return b; }
 function rfield(l,v,m,f){
  var d=document.createElement('div'); d.className='rf'+(f?' full':'');
@@ -504,6 +503,7 @@ function rfield(l,v,m,f){
  return d;
 }
 function rdiv(){ var d=document.createElement('div'); d.className='rf-div'; return d; }
+
 function showResult(r){
  resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
  var plat=(r.platform||'').toUpperCase(), book=(r.book||'').toUpperCase();
@@ -527,11 +527,13 @@ function showResult(r){
  bodyEl.appendChild(rfield('Status',r.convirza_status,false));
  }
 }
+
 function showNotFound(num){
  resultEl.classList.add('show'); badgesEl.innerHTML=''; bodyEl.innerHTML='';
  foundLabel.className='result-status-label err'; foundLabel.textContent='✕ NOT FOUND';
  bodyEl.appendChild(rfield('Searched',num,true,true));
 }
+
 function doLookup(){
  if(!ready) return;
  var raw=inp.value.trim(); if(!raw) return;
@@ -541,16 +543,20 @@ function doLookup(){
  if(m){ setLookupStatus('Match found — '+d,'ok'); showResult(m); }
  else { setLookupStatus('No record found for '+d,'err'); showNotFound(d); }
 }
+
 inp.addEventListener('keydown',function(e){ if(e.key==='Enter') doLookup(); });
 btn.addEventListener('click',doLookup);
 inp.addEventListener('input',function(){ if(ready){ resultEl.classList.remove('show'); setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok'); }});
+
 var uploadZone=document.getElementById('upload-zone');
 var pdfFile=document.getElementById('pdf-file');
 uploadZone.addEventListener('dragover',function(e){ e.preventDefault(); uploadZone.classList.add('drag'); });
 uploadZone.addEventListener('dragleave',function(){ uploadZone.classList.remove('drag'); });
 uploadZone.addEventListener('drop',function(e){ e.preventDefault(); uploadZone.classList.remove('drag'); if(e.dataTransfer.files[0]) startScan(e.dataTransfer.files[0]); });
 pdfFile.addEventListener('change',function(){ if(pdfFile.files[0]) startScan(pdfFile.files[0]); });
+
 function setScanState(s,d){ document.getElementById('scan-stage').textContent=s; document.getElementById('scan-detail').textContent=d; }
+
 async function startScan(file){
  if(!ready){ alert('Records still loading — try again in a moment.'); return; }
  if(!CLAUDE_KEY){ alert('Please enter your Anthropic API key in the sidebar first.'); return; }
@@ -586,7 +592,7 @@ async function startScan(file){
  },
  {
  type: 'text',
- text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found, extract: the phone number, the page number, the business name shown in the ad, and the trade or service type shown in the ad (e.g. Plumbing, Roofing, HVAC, Electrical, Landscaping, etc). Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567","ad_name":"Acme Plumbing","ad_trade":"Plumbing"},{"page":3,"number":"8185556789","ad_name":"Smith Roofing","ad_trade":"Roofing"}]. Rules: 10-digit US numbers only digits only no formatting, include every ad on every page, do not skip any pages or ads, do not include any explanation.'
+ text: 'This is an advertising booklet PDF. Go through every single page carefully. Pages may contain multiple ads including half-page ads — treat each ad as separate. For each ad found on each page, extract ONLY the phone number and the page number it appears on. Return ONLY a valid JSON array, nothing else: [{"page":2,"number":"4081234567"},{"page":3,"number":"8185556789"}]. Rules: 10-digit US numbers only, digits only no formatting, include every number on every page, do not skip any pages or ads, do not include any explanation.'
  }
  ]
  }]
@@ -605,168 +611,78 @@ async function startScan(file){
  alert('Scan failed: '+err.message);
  }
 }
+
 function fmtPhone(n){ return String(n).replace(/(\d{3})(\d{3})(\d{4})/,'($1) $2-$3'); }
+
 function buildReport(data){
  qcResults = [];
  var tbAll = document.getElementById('tbody-all');
  var tbFlags = document.getElementById('tbody-flags');
  tbAll.innerHTML=''; tbFlags.innerHTML='';
- var matched=0, flagged=0;
+ var matched=0, notfound=0;
+
  data.sort(function(a,b){ return a.page-b.page; });
- // Track pages per tracking number (for duplicate number detection)
- var numPages={};
+
  data.forEach(function(item){
- var num=String(item.number).replace(/\D/g,'');
- if(num.length!==10) return;
- if(!numPages[num]) numPages[num]=[];
- if(numPages[num].indexOf(item.page)===-1) numPages[num].push(item.page);
- });
- // Track pages per customer+trade combo (for duplicate ad detection)
- // Key: CUSTOMER|TRADE — same company same trade on multiple pages = real duplicate
- var adPages={};
- data.forEach(function(item){
- var num=String(item.number).replace(/\D/g,'');
- if(num.length!==10) return;
- var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
- if(!rec) return;
- var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
- if(!adPages[key]) adPages[key]=[];
- var exists=adPages[key].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
- if(!exists) adPages[key].push({page:item.page, num:num});
- });
- // Track pages per customer only (for multi-ad detection)
- // Key: CUSTOMER — same company different trades = intentional multi-ad, not a problem
- var customerPages={};
- data.forEach(function(item){
- var num=String(item.number).replace(/\D/g,'');
- if(num.length!==10) return;
- var rec=records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
- if(!rec) return;
- var ckey=(rec.customer||'').toUpperCase().trim();
- if(!customerPages[ckey]) customerPages[ckey]=[];
- var exists=customerPages[ckey].filter(function(e){ return e.page===item.page&&e.num===num; }).length>0;
- if(!exists) customerPages[ckey].push({page:item.page, num:num, trade:(rec.trade||'').toUpperCase().trim()});
- });
- data.forEach(function(item){
- var num=String(item.number).replace(/\D/g,'');
- var pg=item.page;
- if(num.length!==10) return;
- var normNum=norm(num);
- var rec=records.filter(function(r){ return norm(r.tracking_number)===normNum; })[0];
- var isMatch=!!rec;
- // Duplicate number: same TN appears on multiple pages
- var isDupeNum=numPages[num]&&numPages[num].length>1;
- // Duplicate ad: same customer AND same trade on multiple pages (real problem)
- var isDupeAd=false;
- var dupeAdPages=[];
- // Multi-ad: same customer but DIFFERENT trades on multiple pages (expected/OK)
- var isMultiAd=false;
- var multiAdInfo=[];
- if(rec){
- var key=(rec.customer||'').toUpperCase().trim()+'|'+(rec.trade||'').toUpperCase().trim();
- if(adPages[key]&&adPages[key].length>1){
- isDupeAd=true;
- dupeAdPages=adPages[key];
- }
- var ckey=(rec.customer||'').toUpperCase().trim();
- if(!isDupeAd && customerPages[ckey]&&customerPages[ckey].length>1){
- // Same customer, multiple entries — check if trades differ
- var trades=customerPages[ckey].map(function(e){ return e.trade; });
- var uniqueTrades=trades.filter(function(t,i){ return trades.indexOf(t)===i; });
- if(uniqueTrades.length>1){
- isMultiAd=true;
- multiAdInfo=customerPages[ckey];
- }
- }
- }
- // Mismatch: TN is in DB but the ad name/trade on the page doesn't match DB record
- // Only flag if BOTH name AND trade fail — one partial mismatch is too noisy
- var isMismatch=false;
- if(isMatch && rec){
- var adName=(item.ad_name||'').toUpperCase().trim();
- var adTrade=(item.ad_trade||'').toUpperCase().trim();
- if(adName && adTrade){
- var dbName=(rec.customer||'').toUpperCase().trim();
- var dbTrade=(rec.trade||'').toUpperCase().trim();
- var dbWords=dbName.split(/\s+/).filter(function(w){ return w.length>2; });
- var adWords=adName.split(/\s+/).filter(function(w){ return w.length>2; });
- var nameMatch=dbWords.some(function(w){ return adName.indexOf(w)>-1; })
- || adWords.some(function(w){ return dbName.indexOf(w)>-1; })
- || adName.indexOf(dbName)>-1 || dbName.indexOf(adName)>-1;
- var tradeMatch=dbTrade.indexOf(adTrade)>-1 || adTrade.indexOf(dbTrade)>-1
- || adTrade.split(/\s+/).some(function(w){ return w.length>2&&dbTrade.indexOf(w)>-1; })
- || dbTrade.split(/\s+/).some(function(w){ return w.length>2&&adTrade.indexOf(w)>-1; });
- // Only flag if BOTH name and trade fail to match
- if(!nameMatch && !tradeMatch) isMismatch=true;
- }
- }
- if(isMatch) matched++; else flagged++;
- var status = !isMatch ? 'NOT FOUND'
- : isMismatch ? 'MISMATCH'
- : isDupeNum ? 'DUPLICATE NUMBER'
- : isDupeAd ? 'DUPLICATE AD'
- : isMultiAd ? 'MULTI-AD'
- : 'MATCH';
+ var num = String(item.number).replace(/\D/g,'');
+ var pg = item.page;
+ if(num.length !== 10) return;
+
+ var rec = records.filter(function(r){ return norm(r.tracking_number)===norm(num); })[0];
+ var isMatch = !!rec;
+
+ if(isMatch) matched++; else notfound++;
+
  qcResults.push({
- page:pg, num:num, status:status,
- customer:rec?rec.customer:'',
- trade:rec?rec.trade:'',
- zone:rec?rec.zone:'',
- book:rec?rec.book:'',
- platform:rec?rec.platform:''
+ page: pg, num: num,
+ status: isMatch ? 'MATCH' : 'NOT FOUND',
+ customer: rec ? rec.customer : '',
+ trade: rec ? rec.trade : '',
+ zone: rec ? rec.zone : '',
+ book: rec ? rec.book : '',
+ platform: rec ? rec.platform : ''
  });
- var tr=document.createElement('tr');
- if(!isMatch||isMismatch) tr.className='flagrow';
- else if(isDupeNum||isDupeAd) tr.className='duperow';
- else if(isMultiAd) tr.className='multirow';
- var pill = !isMatch
- ? '<span class="pill pill-miss">✕ Not Found</span>'
- : isMismatch ? '<span class="pill pill-miss">⚠ Mismatch</span>'
- : isDupeNum ? '<span class="pill pill-dupe">⚠ Dup. Number</span>'
- : isDupeAd ? '<span class="pill pill-dupe">⚠ Dup. Ad</span>'
- : isMultiAd ? '<span class="pill pill-multi">✓ Multi-Ad</span>'
- : '<span class="pill pill-match">✓ Match</span>';
- tr.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td>'
+
+ // Full report row
+ var tr = document.createElement('tr');
+ if(!isMatch) tr.className = 'flagrow';
+ var pill = isMatch
+ ? '<span class="pill pill-match">✓ Match</span>'
+ : '<span class="pill pill-miss">✕ Not Found</span>';
+ tr.innerHTML = '<td>'+pg+'</td>'
+ +'<td>'+fmtPhone(num)+'</td>'
  +'<td>'+pill+'</td>'
- +'<td>'+(rec?rec.customer:'—')+'</td>'
- +'<td>'+(rec?rec.trade:'—')+'</td>'
- +'<td>'+(rec?rec.zone:'—')+'</td>'
- +'<td>'+(rec?rec.book:'—')+'</td>'
- +'<td>'+(rec?rec.platform:'—')+'</td>';
+ +'<td>'+(rec ? rec.customer : '—')+'</td>'
+ +'<td>'+(rec ? rec.trade : '—')+'</td>'
+ +'<td>'+(rec ? rec.zone : '—')+'</td>'
+ +'<td>'+(rec ? rec.book : '—')+'</td>'
+ +'<td>'+(rec ? rec.platform : '—')+'</td>';
  tbAll.appendChild(tr);
+
+ // Not Found tab
  if(!isMatch){
- var tr2=document.createElement('tr'); tr2.className='flagrow';
- tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Review required — not in dataset</td>';
+ var tr2 = document.createElement('tr'); tr2.className='flagrow';
+ tr2.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Not in master dataset — review required</td>';
  tbFlags.appendChild(tr2);
- } else if(isMismatch){
- var trM=document.createElement('tr'); trM.className='flagrow';
- trM.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Mismatch: '+(item.ad_name||'?')+' / '+(item.ad_trade||'?')+' -- DB has: '+(rec?rec.customer:'?')+' / '+(rec?(rec.trade||'?'):'?')+'</td>';
- tbFlags.appendChild(trM);
- } else if(isDupeNum){
- var tr3=document.createElement('tr'); tr3.className='duperow';
- tr3.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>Same number on pages: '+numPages[num].join(', ')+'</td>';
- tbFlags.appendChild(tr3);
- } else if(isDupeAd){
- var tr4=document.createElement('tr'); tr4.className='duperow';
- var pageList=dupeAdPages.map(function(e){ return 'p.'+e.page+' ('+fmtPhone(e.num)+')'; }).join(', ');
- tr4.innerHTML='<td>'+pg+'</td><td>'+fmtPhone(num)+'</td><td>'+(rec?rec.customer:'?')+' / '+(rec?rec.trade:'?')+' — same trade on: '+pageList+'</td>';
- tbFlags.appendChild(tr4);
  }
- // MULTI-AD is intentional — does not appear in flags tab, only in full report
  });
- document.getElementById('qc-total').textContent=matched+flagged;
- document.getElementById('qc-matched').textContent=matched;
- document.getElementById('qc-flagged').textContent=flagged;
- if(tbFlags.children.length===0){
- tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ No flags — all numbers matched</td></tr>';
+
+ document.getElementById('qc-total').textContent = matched + notfound;
+ document.getElementById('qc-matched').textContent = matched;
+ document.getElementById('qc-flagged').textContent = notfound;
+
+ if(tbFlags.children.length === 0){
+ tbFlags.innerHTML='<tr><td colspan="3" style="text-align:center;padding:24px;color:#2E7D3A;font-family:IBM Plex Mono,monospace">✓ All numbers matched</td></tr>';
  }
  document.getElementById('qc-results').classList.add('show');
 }
+
 function resetQC(){
  document.getElementById('qc-results').classList.remove('show');
  uploadZone.style.display='block';
  pdfFile.value=''; qcResults=[];
 }
+
 function exportCSV(){
  var rows=[['Page','Number','Status','Customer','Trade','Zone','Book','Platform']];
  qcResults.forEach(function(r){ rows.push([r.page,r.num,r.status,r.customer,r.trade,r.zone,r.book,r.platform]); });
@@ -776,6 +692,7 @@ function exportCSV(){
  a.download='trackstream_qc_report.csv';
  a.click();
 }
+
 function saveClaudeKey(){
  var k=document.getElementById('claude-key-input').value.trim();
  if(!k){ alert('Please paste your Anthropic API key'); return; }
@@ -784,11 +701,13 @@ function saveClaudeKey(){
  document.getElementById('key-setup').style.display='none';
  alert('Key saved. You can now use the Booklet QC scanner.');
 }
+
 if(!CLAUDE_KEY){
  window.addEventListener('DOMContentLoaded', function(){
  document.getElementById('key-setup').style.display='block';
  });
 }
+
 function processRecords(json){
  if(!json.records){
  setLookupStatus('Failed to load records','err');
@@ -822,6 +741,7 @@ function processRecords(json){
  setLookupStatus('Ready — '+records.length.toLocaleString()+' records loaded','ok');
  setConn('ok',records.length.toLocaleString()+' records');
 }
+
 (function(){
  try {
  var script=document.createElement('script');
